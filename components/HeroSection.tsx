@@ -23,37 +23,20 @@ export default function HeroSection() {
 
       {/* Animated SVG blueprint lines */}
       <svg className="absolute inset-0 w-full h-full opacity-10" aria-hidden="true">
-        {/* horizontal lines */}
         {[15, 30, 45, 60, 75, 90].map((y) => (
-          <line
-            key={`h${y}`}
-            x1="0"
-            y1={`${y}%`}
-            x2="100%"
-            y2={`${y}%`}
-            stroke="#639bd2"
-            strokeWidth="0.5"
-            strokeDasharray="6 10"
-          />
+          <line key={`h${y}`} x1="0" y1={`${y}%`} x2="100%" y2={`${y}%`} stroke="#639bd2" strokeWidth="0.5" strokeDasharray="6 10" />
         ))}
-        {/* vertical lines */}
         {[10, 25, 40, 55, 70, 85].map((x) => (
-          <line
-            key={`v${x}`}
-            x1={`${x}%`}
-            y1="0"
-            x2={`${x}%`}
-            y2="100%"
-            stroke="#639bd2"
-            strokeWidth="0.5"
-            strokeDasharray="6 10"
-          />
+          <line key={`v${x}`} x1={`${x}%`} y1="0" x2={`${x}%`} y2="100%" stroke="#639bd2" strokeWidth="0.5" strokeDasharray="6 10" />
         ))}
-        {/* floor plan silhouette */}
-        <rect x="30%" y="22%" width="40%" height="55%" fill="none" stroke="#639bd2" strokeWidth="1" strokeDasharray="4 6" className="opacity-40" />
-        <rect x="32%" y="24%" width="16%" height="25%" fill="none" stroke="#a8875e" strokeWidth="0.8" />
-        <rect x="52%" y="24%" width="16%" height="25%" fill="none" stroke="#a8875e" strokeWidth="0.8" />
-        <rect x="32%" y="53%" width="36%" height="22%" fill="none" stroke="#a8875e" strokeWidth="0.8" />
+        {/* Irregular building footprint — museum form */}
+        <polygon
+          points="28%,28% 50%,22% 68%,26% 70%,58% 60%,72% 32%,70% 28%,50%"
+          fill="none" stroke="#639bd2" strokeWidth="1" strokeDasharray="4 6" className="opacity-40"
+        />
+        <rect x="30%" y="30%" width="14%" height="22%" fill="none" stroke="#a8875e" strokeWidth="0.8" />
+        <rect x="48%" y="28%" width="18%" height="18%" fill="none" stroke="#a8875e" strokeWidth="0.8" />
+        <rect x="30%" y="55%" width="36%" height="12%" fill="none" stroke="#a8875e" strokeWidth="0.8" />
       </svg>
 
       {/* Gradient overlay */}
@@ -61,35 +44,45 @@ export default function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-        {/* Category tag */}
-        <div className="inline-flex items-center gap-3 mb-8">
+        {/* Proponent tag */}
+        <div className="inline-flex items-center gap-3 mb-3">
           <span className="w-12 h-[1px] bg-architect-500" />
           <span className="text-architect-400 text-xs uppercase tracking-[0.3em] font-medium">
-            Architecture Design Showcase
+            BS Architecture 5C · LCC Bacolod · AFAID
           </span>
           <span className="w-12 h-[1px] bg-architect-500" />
         </div>
+        <p className="text-stone-500 text-xs uppercase tracking-widest mb-8">
+          Karl Angelo G. Sumog-oy
+        </p>
 
         {/* Main heading */}
         <h1
           ref={titleRef}
-          className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-tight mb-6 transition-all duration-1000"
+          className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6 transition-all duration-1000"
           style={{
             fontFamily: "'Playfair Display', serif",
             opacity: 0,
             transform: "translateY(40px)",
           }}
         >
-          <span className="text-stone-100">Designed with</span>
+          <span className="text-stone-100">Interactive Library</span>
           <br />
-          <span className="text-architect-400 italic">Intention</span>
+          <span className="text-architect-400 italic">&amp; Museum</span>
           <br />
-          <span className="text-stone-100">Built with Precision</span>
+          <span className="text-stone-300 text-3xl md:text-4xl">Himamaylan City, Negros Occidental</span>
         </h1>
 
-        <p className="text-stone-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          A complete walkthrough of the residential architecture process — from site survey
-          to handover — with annotated floor plans, elevation views, and every design decision explained.
+        {/* Sub-project tag */}
+        <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 border border-stone-700 bg-stone-900/40 rounded-sm">
+          <span className="w-2 h-2 rounded-full bg-architect-500" />
+          <span className="text-stone-400 text-xs tracking-wide">+ New Government Center · Brgy. Santo Niño, E.B. Magalona · 3.7581 ha</span>
+        </div>
+
+        <p className="text-stone-400 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+          A complete architectural showcase — annotated floor plans (Sheets A-01 to A-07),
+          elevation views, site analysis, construction timeline, and the full design process,
+          all in one interactive presentation.
         </p>
 
         {/* CTA buttons */}
@@ -106,17 +99,17 @@ export default function HeroSection() {
             className="px-8 py-4 border border-stone-600 text-stone-300 hover:border-architect-500 hover:text-architect-400 text-sm uppercase tracking-widest transition-all duration-300"
             id="hero-cta-process"
           >
-            Architect Process
+            Design Process
           </a>
         </div>
 
         {/* Stats row */}
-        <div className="mt-16 flex flex-wrap justify-center gap-8 md:gap-16">
+        <div className="mt-16 flex flex-wrap justify-center gap-8 md:gap-14">
           {[
-            { value: "650", unit: "m²", label: "Total Site" },
-            { value: "310", unit: "m²", label: "Built Area" },
-            { value: "7", unit: "", label: "Design Phases" },
-            { value: "24", unit: "mo", label: "Project Duration" },
+            { value: "37,581", unit: "m²", label: "Gov't Center Site" },
+            { value: "7", unit: "sheets", label: "Drawing Set A-01–A-07" },
+            { value: "3", unit: "levels", label: "Museum Floors" },
+            { value: "6", unit: "phases", label: "Construction Stages" },
           ].map((s) => (
             <div key={s.label} className="text-center">
               <div className="font-serif text-3xl text-architect-400" style={{ fontFamily: "'Playfair Display', serif" }}>

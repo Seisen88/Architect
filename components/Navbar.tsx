@@ -39,7 +39,7 @@ export default function Navbar() {
             className="font-serif text-xl tracking-widest text-architect-200 group-hover:text-architect-400 transition-colors"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
-            ARCHI<span className="text-architect-500">STUDIOS</span>
+            ARCHI<span className="text-architect-500">DESIGN</span>
           </span>
         </Link>
 
@@ -62,7 +62,7 @@ export default function Navbar() {
           href="#process"
           className="hidden md:inline-flex items-center gap-2 px-5 py-2 border border-architect-600 text-architect-400 text-xs uppercase tracking-widest hover:bg-architect-600 hover:text-stone-950 transition-all duration-300"
         >
-          Our Process
+          View Process
         </a>
 
         {/* Hamburger */}

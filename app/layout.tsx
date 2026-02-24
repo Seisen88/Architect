@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ArchiStudios — Architecture Design Showcase",
+  title: "Interactive Library & Museum · New Government Center — Architecture Showcase",
   description:
-    "Explore floor plans, site areas, elevation views, site development timelines, and the complete architectural design process.",
+    "Architecture design showcase by Karl Angelo G. Sumog-oy, BS Architecture 5C, LCC Bacolod. Interactive Library & Museum · Himamaylan City and New Government Center · E.B. Magalona, Negros Occidental.",
 };
 
 export default function RootLayout({
