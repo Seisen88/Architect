@@ -140,7 +140,7 @@ export default function FloorPlanRenderer({
             
             {/* Fills Layer (drawn on top, covering interior strokes between overlapping rooms) */}
             {(() => {
-              const firstCat = ROOM_COLORS[renderRooms[0].category];
+              const firstCat = ROOM_COLORS[renderRooms[0].category] || ROOM_COLORS["support"];
               const match = firstCat.fill.match(/rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/);
               const groupOpacity = isGrouped && match ? parseFloat(match[4]) : undefined;
               
@@ -234,7 +234,7 @@ export default function FloorPlanRenderer({
               return fcx >= r.x && fcx <= r.x + r.w && fcy >= r.y && fcy <= r.y + r.h;
             });
             
-            const furnColor = parentRoom ? ROOM_COLORS[parentRoom.category].stroke : undefined;
+            const furnColor = parentRoom ? (ROOM_COLORS[parentRoom.category] || ROOM_COLORS["support"]).stroke : undefined;
             
             return (
               <FurnitureSVG key={fItem.id} type={fItem.type} x={fItem.x} y={fItem.y} w={fItem.w} h={fItem.h} rotation={fItem.rotation} selected={fItem.id === selectedId} color={furnColor} flipX={fItem.flipX} flipY={fItem.flipY} />

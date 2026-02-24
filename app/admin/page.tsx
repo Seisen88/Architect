@@ -90,7 +90,7 @@ export default function AdminPage() {
   if (!state) return <div className="p-8 text-stone-500 font-serif">Initializing editor state...</div>;
   const { rooms, furniture } = state;
 
-  const [floorColor, setFloorColor] = useState("rgba(26,24,22,0.15)");
+  const [floorColor, setFloorColor] = useState("rgba(18,18,20,0.5)");
 
   // Load from localStorage AFTER hydration to avoid server/client mismatch
   const [hydrated, setHydrated] = useState(false);
@@ -154,7 +154,7 @@ export default function AdminPage() {
   const [sideTab, setSideTab] = useState<"rooms" | "furniture" | "all">("all");
 
   const [showAdd, setShowAdd] = useState(false);
-  const [newRoom, setNewRoom] = useState({ label: "", category: "executive" as RoomCategory });
+  const [newRoom, setNewRoom] = useState({ label: "", category: "floor" as RoomCategory });
   const [search, setSearch] = useState("");
 
   const [clipboard, setClipboard] = useState<{ rooms: Room[]; furniture: FurnitureItem[] }>({ rooms: [], furniture: [] });
@@ -378,7 +378,7 @@ export default function AdminPage() {
     const id = `room-${Date.now()}`;
     const floor = activeFloor === "all" ? 1 : activeFloor;
     commitRooms(p => [...p, { id, label: newRoom.label.replace(/\\n/g, "\n"), category: newRoom.category, x: 500, y: 300, w: 120, h: 70, floor }]);
-    setSelKind("room"); setSelection(new Set([id])); setShowAdd(false); setNewRoom({ label: "", category: "executive" });
+    setSelKind("room"); setSelection(new Set([id])); setShowAdd(false); setNewRoom({ label: "", category: "floor" });
   };
 
   const placeFurniture = (type: FurnitureType) => {
@@ -725,7 +725,7 @@ export default function AdminPage() {
                     return fcx >= r.x && fcx <= r.x + r.w && fcy >= r.y && fcy <= r.y + r.h;
                   });
                   
-                  const furnColor = parentRoom ? ROOM_COLORS[parentRoom.category].stroke : undefined;
+                  const furnColor = parentRoom ? (ROOM_COLORS[parentRoom.category] || ROOM_COLORS["support"]).stroke : undefined;
 
                   return (
                     <g key={fItem.id}>
@@ -859,7 +859,7 @@ export default function AdminPage() {
               {/* Room list */}
               <div className="flex-1 overflow-y-auto p-2">
                 {filteredRooms.map(room => {
-                  const c = ROOM_COLORS[room.category];
+                  const c = ROOM_COLORS[room.category] || ROOM_COLORS["support"];
                   return (
                     <button key={room.id} onClick={() => { setSelKind("room"); setSelection(new Set([room.id])); }}
                       className={`w-full text-left px-2 py-1 text-[10px] flex items-center gap-1.5 ${selKind === "room" && selection.has(room.id) ? "bg-stone-800 border-l-2 border-architect-500" : "hover:bg-stone-800/50 border-l-2 border-transparent"}`}>

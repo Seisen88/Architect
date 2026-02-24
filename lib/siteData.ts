@@ -9,17 +9,19 @@
 
 // ── Room data for the visual floor plan editor ──
 export type RoomCategory =
-  | "executive"    // tan   — Executive / Admin
+  | "floor"        // tan   — Floor / Corridors
   | "financial"    // blue  — Financial Services
   | "public"       // green — Public Services
   | "integrated"   // orange — Integrated Hubs (BIR/LTO/PhilHealth)
+  | "utility"      // red — Utility / Service
   | "support";     // gray  — Support / Circulation
 
 export const ROOM_COLORS: Record<RoomCategory, { fill: string; stroke: string; text: string; label: string }> = {
-  executive:  { fill: "rgba(212,197,169,0.22)", stroke: "#a8875e", text: "#d4c5a9", label: "Executive / Admin" },
+  floor:      { fill: "rgba(212,197,169,0.22)", stroke: "#a8875e", text: "#d4c5a9", label: "Floor / Corridors" },
   financial:  { fill: "rgba(124,179,216,0.22)", stroke: "#3b82f6", text: "#7cb3d8", label: "Financial Services" },
   public:     { fill: "rgba(110,212,165,0.22)", stroke: "#16a34a", text: "#6ed4a5", label: "Public Services" },
   integrated: { fill: "rgba(232,168,76,0.22)",  stroke: "#d97706", text: "#e8a84c", label: "Integrated Hub (BIR/LTO/PhilHealth)" },
+  utility:    { fill: "rgba(239,68,68,0.20)",   stroke: "#dc2626", text: "#f87171", label: "Utility / Service" },
   support:    { fill: "rgba(156,163,175,0.16)", stroke: "#64748b", text: "#9ca3af", label: "Support / Circulation" },
 };
 
@@ -42,31 +44,31 @@ export const defaultRooms: Room[] = [
   // ── WEST WING (Cols A–C) ──
   { id: "elec-w",      label: "ELECTRICAL\nROOM",            category: "support",    x: 48,  y: 30,  w: 60,  h: 75, floor: 1 },
   { id: "stairs-w",    label: "STAIRS",                      category: "support",    x: 108, y: 30,  w: 65,  h: 75, floor: 1 },
-  { id: "it-office",   label: "IT / OFFICE",                 category: "executive",  x: 48,  y: 105, w: 125, h: 65, floor: 1 },
-  { id: "office-w",    label: "OFFICE",                      category: "executive",  x: 48,  y: 170, w: 125, h: 55, floor: 1 },
+  { id: "it-office",   label: "IT / OFFICE",                 category: "floor",  x: 48,  y: 105, w: 125, h: 65, floor: 1 },
+  { id: "office-w",    label: "OFFICE",                      category: "floor",  x: 48,  y: 170, w: 125, h: 55, floor: 1 },
   { id: "treasurer",   label: "TREASURER'S\nOFFICE\nTREASURY HALL", category: "financial", x: 48, y: 225, w: 125, h: 95, floor: 1 },
   { id: "self-svc",    label: "SELF\nSERVICE",               category: "financial",  x: 48,  y: 320, w: 60,  h: 70, floor: 1 },
   { id: "txn-counter", label: "TRANSACTION\nCOUNTER",        category: "financial",  x: 108, y: 320, w: 65,  h: 70, floor: 1 },
   { id: "txn-window",  label: "TRANSACTION WINDOW",          category: "financial",  x: 48,  y: 390, w: 125, h: 40, floor: 1 },
-  { id: "library",     label: "LIBRARY",                     category: "executive",  x: 48,  y: 430, w: 125, h: 65, floor: 1 },
+  { id: "library",     label: "LIBRARY",                     category: "floor",  x: 48,  y: 430, w: 125, h: 65, floor: 1 },
   { id: "links-lobby", label: "LINKS / LOBBY",               category: "support",    x: 48,  y: 495, w: 125, h: 65, floor: 1 },
 
   // ── LEFT-CENTER WING (Cols D–H) ──
-  { id: "office-d",    label: "OFFICE",                      category: "executive",  x: 173, y: 30,  w: 75,  h: 75, floor: 1 },
-  { id: "office-e",    label: "OFFICE",                      category: "executive",  x: 248, y: 30,  w: 75,  h: 75, floor: 1 },
+  { id: "office-d",    label: "OFFICE",                      category: "floor",  x: 173, y: 30,  w: 75,  h: 75, floor: 1 },
+  { id: "office-e",    label: "OFFICE",                      category: "floor",  x: 248, y: 30,  w: 75,  h: 75, floor: 1 },
   { id: "mun-budget",  label: "MUNICIPAL\nBUDGET",           category: "financial",  x: 323, y: 30,  w: 75,  h: 75, floor: 1 },
-  { id: "office-h",    label: "OFFICE",                      category: "executive",  x: 398, y: 30,  w: 73,  h: 75, floor: 1 },
-  { id: "assessor",    label: "ASSESSOR'S OFFICE",           category: "executive",  x: 173, y: 105, w: 150, h: 95, floor: 1 },
+  { id: "office-h",    label: "OFFICE",                      category: "floor",  x: 398, y: 30,  w: 73,  h: 75, floor: 1 },
+  { id: "assessor",    label: "ASSESSOR'S OFFICE",           category: "floor",  x: 173, y: 105, w: 150, h: 95, floor: 1 },
   { id: "accounting",  label: "ACCOUNTING",                  category: "financial",  x: 323, y: 105, w: 148, h: 95, floor: 1 },
   { id: "budget-off",  label: "BUDGET OFFICE",               category: "financial",  x: 173, y: 200, w: 150, h: 100,floor: 1 },
-  { id: "mpdc",        label: "MPDC / OFFICE",               category: "executive",  x: 323, y: 200, w: 148, h: 55, floor: 1 },
-  { id: "conf-l",      label: "CONF. ROOM",                  category: "executive",  x: 323, y: 255, w: 148, h: 45, floor: 1 },
+  { id: "mpdc",        label: "MPDC / OFFICE",               category: "floor",  x: 323, y: 200, w: 148, h: 55, floor: 1 },
+  { id: "conf-l",      label: "CONF. ROOM",                  category: "floor",  x: 323, y: 255, w: 148, h: 45, floor: 1 },
   { id: "wait-l",      label: "OPEN WAITING AREA",           category: "support",    x: 173, y: 300, w: 298, h: 128,floor: 1 },
-  { id: "reception-l", label: "RECEPTION",                   category: "executive",  x: 173, y: 428, w: 298, h: 52, floor: 1 },
+  { id: "reception-l", label: "RECEPTION",                   category: "floor",  x: 173, y: 428, w: 298, h: 52, floor: 1 },
   { id: "emp-entrance",label: "EMPLOYEE ENTRANCE\nCITIZENS HALL ANTECHAMBER", category: "support", x: 173, y: 480, w: 298, h: 80, floor: 1 },
 
   // ── CENTRAL (Cols I–K) ──
-  { id: "lift",        label: "LIFT",                        category: "executive",  x: 505, y: 395, w: 50,  h: 38, floor: 1 },
+  { id: "lift",        label: "LIFT",                        category: "floor",  x: 505, y: 395, w: 50,  h: 38, floor: 1 },
   { id: "stairs-c",    label: "STAIRS",                      category: "support",    x: 560, y: 395, w: 50,  h: 38, floor: 1 },
 
   // ── RIGHT-CENTER WING (Cols J–N) ──
@@ -75,12 +77,12 @@ export const defaultRooms: Room[] = [
   { id: "engineering", label: "ENGINEERING",                  category: "public",     x: 794, y: 30,  w: 75,  h: 75, floor: 1 },
   { id: "menro",       label: "MENRO",                       category: "public",     x: 869, y: 30,  w: 73,  h: 75, floor: 1 },
   { id: "lcr",         label: "LCR",                         category: "public",     x: 644, y: 105, w: 150, h: 95, floor: 1 },
-  { id: "hr",          label: "HUMAN RESOURCES",             category: "executive",  x: 794, y: 105, w: 148, h: 95, floor: 1 },
-  { id: "sb-office",   label: "SANGGUNIANG BAYAN\nOFFICE / SB SEC.", category: "executive", x: 644, y: 200, w: 150, h: 100, floor: 1 },
-  { id: "vice-mayor",  label: "OFFICE OF THE VICE MAYOR",   category: "executive",  x: 794, y: 200, w: 148, h: 55, floor: 1 },
-  { id: "conf-r",      label: "CONF. ROOM",                  category: "executive",  x: 794, y: 255, w: 148, h: 45, floor: 1 },
+  { id: "hr",          label: "HUMAN RESOURCES",             category: "floor",  x: 794, y: 105, w: 148, h: 95, floor: 1 },
+  { id: "sb-office",   label: "SANGGUNIANG BAYAN\nOFFICE / SB SEC.", category: "floor", x: 644, y: 200, w: 150, h: 100, floor: 1 },
+  { id: "vice-mayor",  label: "OFFICE OF THE VICE MAYOR",   category: "floor",  x: 794, y: 200, w: 148, h: 55, floor: 1 },
+  { id: "conf-r",      label: "CONF. ROOM",                  category: "floor",  x: 794, y: 255, w: 148, h: 45, floor: 1 },
   { id: "wait-r",      label: "OPEN WAITING AREA",           category: "support",    x: 644, y: 300, w: 298, h: 128,floor: 1 },
-  { id: "mayor",       label: "OFFICE OF THE MAYOR",         category: "executive",  x: 644, y: 428, w: 298, h: 52, floor: 1 },
+  { id: "mayor",       label: "OFFICE OF THE MAYOR",         category: "floor",  x: 644, y: 428, w: 298, h: 52, floor: 1 },
   { id: "vice-mayor-b",label: "OFFICE OF THE VICE MAYOR\nMUNICIPAL ADMINISTRATOR", category: "support", x: 644, y: 480, w: 298, h: 80, floor: 1 },
 
   // ── EAST WING (Cols O–Q) ──
