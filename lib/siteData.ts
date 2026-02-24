@@ -7,6 +7,205 @@
 // Location: Brgy. Santo Niño, Enrique B. Magalona, Negros Occidental
 // ============================================================
 
+// ── Room data for the visual floor plan editor ──
+export type RoomCategory =
+  | "executive"    // tan   — Executive / Admin
+  | "financial"    // blue  — Financial Services
+  | "public"       // green — Public Services
+  | "integrated"   // orange — Integrated Hubs (BIR/LTO/PhilHealth)
+  | "support";     // gray  — Support / Circulation
+
+export const ROOM_COLORS: Record<RoomCategory, { fill: string; stroke: string; text: string; label: string }> = {
+  executive:  { fill: "rgba(212,197,169,0.22)", stroke: "#a8875e", text: "#d4c5a9", label: "Executive / Admin" },
+  financial:  { fill: "rgba(124,179,216,0.22)", stroke: "#3b82f6", text: "#7cb3d8", label: "Financial Services" },
+  public:     { fill: "rgba(110,212,165,0.22)", stroke: "#16a34a", text: "#6ed4a5", label: "Public Services" },
+  integrated: { fill: "rgba(232,168,76,0.22)",  stroke: "#d97706", text: "#e8a84c", label: "Integrated Hub (BIR/LTO/PhilHealth)" },
+  support:    { fill: "rgba(156,163,175,0.16)", stroke: "#64748b", text: "#9ca3af", label: "Support / Circulation" },
+};
+
+export interface Room {
+  id: string;
+  label: string;
+  category: RoomCategory;
+  x: number;       // SVG x coordinate (viewBox 0–1100)
+  y: number;       // SVG y coordinate (viewBox 0–605)
+  w: number;       // width in SVG units
+  h: number;       // height in SVG units
+  floor: number;   // 1 = ground, 2 = second, 3 = third
+  fontSize?: number;
+  group?: string;  // group ID — rooms in the same group hide shared internal borders
+  shape?: "rect" | "circle";
+}
+
+// Current ground floor layout — matches Sheet A03
+export const defaultRooms: Room[] = [
+  // ── WEST WING (Cols A–C) ──
+  { id: "elec-w",      label: "ELECTRICAL\nROOM",            category: "support",    x: 48,  y: 30,  w: 60,  h: 75, floor: 1 },
+  { id: "stairs-w",    label: "STAIRS",                      category: "support",    x: 108, y: 30,  w: 65,  h: 75, floor: 1 },
+  { id: "it-office",   label: "IT / OFFICE",                 category: "executive",  x: 48,  y: 105, w: 125, h: 65, floor: 1 },
+  { id: "office-w",    label: "OFFICE",                      category: "executive",  x: 48,  y: 170, w: 125, h: 55, floor: 1 },
+  { id: "treasurer",   label: "TREASURER'S\nOFFICE\nTREASURY HALL", category: "financial", x: 48, y: 225, w: 125, h: 95, floor: 1 },
+  { id: "self-svc",    label: "SELF\nSERVICE",               category: "financial",  x: 48,  y: 320, w: 60,  h: 70, floor: 1 },
+  { id: "txn-counter", label: "TRANSACTION\nCOUNTER",        category: "financial",  x: 108, y: 320, w: 65,  h: 70, floor: 1 },
+  { id: "txn-window",  label: "TRANSACTION WINDOW",          category: "financial",  x: 48,  y: 390, w: 125, h: 40, floor: 1 },
+  { id: "library",     label: "LIBRARY",                     category: "executive",  x: 48,  y: 430, w: 125, h: 65, floor: 1 },
+  { id: "links-lobby", label: "LINKS / LOBBY",               category: "support",    x: 48,  y: 495, w: 125, h: 65, floor: 1 },
+
+  // ── LEFT-CENTER WING (Cols D–H) ──
+  { id: "office-d",    label: "OFFICE",                      category: "executive",  x: 173, y: 30,  w: 75,  h: 75, floor: 1 },
+  { id: "office-e",    label: "OFFICE",                      category: "executive",  x: 248, y: 30,  w: 75,  h: 75, floor: 1 },
+  { id: "mun-budget",  label: "MUNICIPAL\nBUDGET",           category: "financial",  x: 323, y: 30,  w: 75,  h: 75, floor: 1 },
+  { id: "office-h",    label: "OFFICE",                      category: "executive",  x: 398, y: 30,  w: 73,  h: 75, floor: 1 },
+  { id: "assessor",    label: "ASSESSOR'S OFFICE",           category: "executive",  x: 173, y: 105, w: 150, h: 95, floor: 1 },
+  { id: "accounting",  label: "ACCOUNTING",                  category: "financial",  x: 323, y: 105, w: 148, h: 95, floor: 1 },
+  { id: "budget-off",  label: "BUDGET OFFICE",               category: "financial",  x: 173, y: 200, w: 150, h: 100,floor: 1 },
+  { id: "mpdc",        label: "MPDC / OFFICE",               category: "executive",  x: 323, y: 200, w: 148, h: 55, floor: 1 },
+  { id: "conf-l",      label: "CONF. ROOM",                  category: "executive",  x: 323, y: 255, w: 148, h: 45, floor: 1 },
+  { id: "wait-l",      label: "OPEN WAITING AREA",           category: "support",    x: 173, y: 300, w: 298, h: 128,floor: 1 },
+  { id: "reception-l", label: "RECEPTION",                   category: "executive",  x: 173, y: 428, w: 298, h: 52, floor: 1 },
+  { id: "emp-entrance",label: "EMPLOYEE ENTRANCE\nCITIZENS HALL ANTECHAMBER", category: "support", x: 173, y: 480, w: 298, h: 80, floor: 1 },
+
+  // ── CENTRAL (Cols I–K) ──
+  { id: "lift",        label: "LIFT",                        category: "executive",  x: 505, y: 395, w: 50,  h: 38, floor: 1 },
+  { id: "stairs-c",    label: "STAIRS",                      category: "support",    x: 560, y: 395, w: 50,  h: 38, floor: 1 },
+
+  // ── RIGHT-CENTER WING (Cols J–N) ──
+  { id: "mswdo",       label: "MSWDO /\nSOCIAL WELFARE",     category: "public",     x: 644, y: 30,  w: 75,  h: 75, floor: 1 },
+  { id: "agriculture", label: "AGRICULTURE",                 category: "public",     x: 719, y: 30,  w: 75,  h: 75, floor: 1 },
+  { id: "engineering", label: "ENGINEERING",                  category: "public",     x: 794, y: 30,  w: 75,  h: 75, floor: 1 },
+  { id: "menro",       label: "MENRO",                       category: "public",     x: 869, y: 30,  w: 73,  h: 75, floor: 1 },
+  { id: "lcr",         label: "LCR",                         category: "public",     x: 644, y: 105, w: 150, h: 95, floor: 1 },
+  { id: "hr",          label: "HUMAN RESOURCES",             category: "executive",  x: 794, y: 105, w: 148, h: 95, floor: 1 },
+  { id: "sb-office",   label: "SANGGUNIANG BAYAN\nOFFICE / SB SEC.", category: "executive", x: 644, y: 200, w: 150, h: 100, floor: 1 },
+  { id: "vice-mayor",  label: "OFFICE OF THE VICE MAYOR",   category: "executive",  x: 794, y: 200, w: 148, h: 55, floor: 1 },
+  { id: "conf-r",      label: "CONF. ROOM",                  category: "executive",  x: 794, y: 255, w: 148, h: 45, floor: 1 },
+  { id: "wait-r",      label: "OPEN WAITING AREA",           category: "support",    x: 644, y: 300, w: 298, h: 128,floor: 1 },
+  { id: "mayor",       label: "OFFICE OF THE MAYOR",         category: "executive",  x: 644, y: 428, w: 298, h: 52, floor: 1 },
+  { id: "vice-mayor-b",label: "OFFICE OF THE VICE MAYOR\nMUNICIPAL ADMINISTRATOR", category: "support", x: 644, y: 480, w: 298, h: 80, floor: 1 },
+
+  // ── EAST WING (Cols O–Q) ──
+  { id: "stairs-e",    label: "STAIRS",                      category: "support",    x: 942, y: 30,  w: 60,  h: 75, floor: 1 },
+  { id: "elec-e",      label: "ELECTRICAL\nROOM",            category: "support",    x: 1002, y: 30, w: 60,  h: 75, floor: 1 },
+  { id: "bir",         label: "BIR",                         category: "integrated",  x: 942, y: 105, w: 120, h: 65, floor: 1 },
+  { id: "lto",         label: "LTO",                         category: "integrated",  x: 942, y: 170, w: 120, h: 55, floor: 1 },
+  { id: "philhealth",  label: "PHILHEALTH",                  category: "integrated",  x: 942, y: 225, w: 120, h: 55, floor: 1 },
+  { id: "post-office", label: "POST OFFICE",                 category: "public",      x: 942, y: 280, w: 120, h: 75, floor: 1 },
+  { id: "biz-permit",  label: "BUSINESS PERMIT\n& LICENSING", category: "integrated", x: 942, y: 355, w: 120, h: 65, floor: 1 },
+  { id: "guard",       label: "GUARD HOUSE",                 category: "support",    x: 942, y: 420, w: 120, h: 55, floor: 1 },
+  { id: "pwd-ramp",    label: "PWD RAMP",                    category: "public",     x: 942, y: 475, w: 120, h: 45, floor: 1 },
+  { id: "staff",       label: "STAFF / PANTRY",              category: "support",    x: 942, y: 520, w: 120, h: 40, floor: 1 },
+];
+
+// ── Furniture / Element data ──
+export type FurnitureType =
+  | "door" | "double-door" | "window" | "stairs-up" | "stairs-down"
+  | "table-rect" | "table-round" | "chair" | "office-chair" | "desk"
+  | "toilet" | "sink" | "urinal" | "shower"
+  | "sofa" | "counter" | "shelf" | "filing-cabinet"
+  | "reception-desk" | "elevator" | "fire-exit" | "column" | "planter" | "partition"
+  | "tree1" | "tree2" | "tree3" | "shrub";
+
+export interface FurnitureCatalogEntry {
+  type: FurnitureType;
+  label: string;
+  group: string; // e.g. "Doors & Windows", "Seating", "Bathroom", etc.
+  defaultW: number;
+  defaultH: number;
+  svgPath: string; // SVG path data drawn in a 0,0 → 1,1 normalized box
+}
+
+export const FURNITURE_CATALOG: FurnitureCatalogEntry[] = [
+  // ── Doors & Windows (plan view: wall line + swing arc seen from above) ──
+  { type: "door",         label: "Door",           group: "Doors & Windows", defaultW: 10, defaultH: 10,
+    svgPath: "M0,0 L0,0.05 L1,0.05 L1,0 M0,0 A1,1 0 0,0 1,1" },
+  { type: "double-door",  label: "Double Door",    group: "Doors & Windows", defaultW: 18, defaultH: 14,
+    svgPath: "M0,0 L0,0.06 L1,0.06 L1,0 M0,0 A0.5,1 0 0,0 0.5,1 M1,0 A0.5,1 0 0,1 0.5,1" },
+  { type: "window",       label: "Window",         group: "Doors & Windows", defaultW: 20, defaultH: 4,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0,0.5 L1,0.5" },
+
+  // ── Stairs (plan view: treads as horizontal lines, arrow for direction) ──
+  { type: "stairs-up",    label: "Stairs Up",      group: "Stairs & Elevator", defaultW: 60, defaultH: 60,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0,0.1 L1,0.1 M0,0.2 L1,0.2 M0,0.3 L1,0.3 M0,0.4 L1,0.4 M0,0.5 L1,0.5 M0,0.6 L1,0.6 M0,0.7 L1,0.7 M0,0.8 L1,0.8 M0,0.9 L1,0.9 M0.5,0.85 L0.5,0.15 M0.5,0.15 L0.35,0.25 M0.5,0.15 L0.65,0.25" },
+  { type: "stairs-down",  label: "Stairs Down",    group: "Stairs & Elevator", defaultW: 60, defaultH: 60,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0,0.1 L1,0.1 M0,0.2 L1,0.2 M0,0.3 L1,0.3 M0,0.4 L1,0.4 M0,0.5 L1,0.5 M0,0.6 L1,0.6 M0,0.7 L1,0.7 M0,0.8 L1,0.8 M0,0.9 L1,0.9 M0.5,0.15 L0.5,0.85 M0.5,0.85 L0.35,0.75 M0.5,0.85 L0.65,0.75" },
+  { type: "elevator",     label: "Elevator",       group: "Stairs & Elevator", defaultW: 25, defaultH: 25,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0,0 L1,1 M1,0 L0,1" },
+
+  // ── Tables & Desks (plan view: rectangles, L-shapes, circles from above) ──
+  { type: "table-rect",   label: "Table (Rect)",   group: "Tables & Desks", defaultW: 18, defaultH: 9,
+    svgPath: "M0.03,0.06 L0.97,0.06 L0.97,0.94 L0.03,0.94Z" },
+  { type: "table-round",  label: "Table (Round)",  group: "Tables & Desks", defaultW: 12, defaultH: 12,
+    svgPath: "M0.5,0.06 A0.44,0.44 0 1,1 0.49,0.06Z" },
+  { type: "desk",         label: "Office Desk",    group: "Tables & Desks", defaultW: 16, defaultH: 8,
+    svgPath: "M0.04,0.06 L0.96,0.06 L0.96,0.94 L0.65,0.94 L0.65,0.5 L0.04,0.5Z" },
+  { type: "reception-desk",label: "Reception Desk",group: "Tables & Desks", defaultW: 45, defaultH: 18,
+    svgPath: "M0,0.1 L0.7,0.1 L0.7,0.5 A0.3,0.5 0 0,0 1,1 L0,1Z M0.05,0.3 L0.65,0.3 L0.65,0.9 L0.05,0.9Z" },
+  { type: "counter",      label: "Counter",        group: "Tables & Desks", defaultW: 35, defaultH: 8,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z" },
+
+  // ── Seating (plan view: seat square/circle with backrest line from above) ──
+  { type: "chair",        label: "Chair",          group: "Seating",  defaultW: 5, defaultH: 5,
+    svgPath: "M0.15,0.25 L0.85,0.25 L0.85,0.9 L0.15,0.9Z M0.1,0.08 L0.9,0.08 L0.9,0.25 L0.1,0.25Z" },
+  { type: "office-chair", label: "Office Chair",   group: "Seating",  defaultW: 6, defaultH: 6,
+    svgPath: "M0.5,0.08 A0.42,0.42 0 1,1 0.49,0.08Z M0.25,0.2 L0.75,0.2 L0.75,0.55 L0.25,0.55Z M0.5,0.92 L0.5,0.55 M0.2,0.92 L0.8,0.92" },
+  { type: "sofa",         label: "Sofa",           group: "Seating",  defaultW: 20, defaultH: 9,
+    svgPath: "M0.04,0.08 L0.96,0.08 L0.96,0.35 L0.04,0.35Z M0.04,0.35 L0.96,0.35 L0.96,0.75 L0.04,0.75Z M0,0.08 L0,0.92 L0.12,0.92 L0.12,0.75 M0.88,0.75 L0.88,0.92 L1,0.92 L1,0.08" },
+
+  // ── Bathroom / CR (plan view: bowl shapes, tank rects from above) ──
+  { type: "toilet",       label: "Toilet",         group: "Bathroom (CR)", defaultW: 5, defaultH: 8,
+    svgPath: "M0.15,0 L0.85,0 L0.85,0.3 L0.15,0.3Z M0.1,0.3 L0.1,0.55 A0.4,0.45 0 0,0 0.9,0.55 L0.9,0.3 M0.5,0.3 A0.4,0.4 0 0,0 0.1,0.7 A0.4,0.3 0 0,0 0.5,1 A0.4,0.3 0 0,0 0.9,0.7 A0.4,0.4 0 0,0 0.5,0.3Z" },
+  { type: "sink",         label: "Sink",           group: "Bathroom (CR)", defaultW: 6, defaultH: 5,
+    svgPath: "M0.1,0 L0.9,0 L0.9,0.15 L0.1,0.15Z M0.1,0.15 L0.1,0.6 A0.4,0.4 0 0,0 0.9,0.6 L0.9,0.15 M0.5,0.35 L0.5,0.55 M0.4,0.45 L0.6,0.45" },
+  { type: "urinal",       label: "Urinal",         group: "Bathroom (CR)", defaultW: 4, defaultH: 5,
+    svgPath: "M0.15,0 L0.85,0 L0.85,0.2 L0.15,0.2Z M0.15,0.2 L0.15,0.55 A0.35,0.45 0 0,0 0.85,0.55 L0.85,0.2" },
+  { type: "shower",       label: "Shower",         group: "Bathroom (CR)", defaultW: 10, defaultH: 10,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0.5,0.5 A0.08,0.08 0 1,1 0.49,0.5Z M0.42,0.42 L0.35,0.35 M0.58,0.42 L0.65,0.35 M0.42,0.58 L0.35,0.65 M0.58,0.58 L0.65,0.65 M0.5,0.4 L0.5,0.3 M0.5,0.6 L0.5,0.7 M0.4,0.5 L0.3,0.5 M0.6,0.5 L0.7,0.5" },
+
+  // ── Storage (plan view: rect outlines from above) ──
+  { type: "shelf",        label: "Shelf",          group: "Storage",  defaultW: 25, defaultH: 6,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0.33,0 L0.33,1 M0.66,0 L0.66,1" },
+  { type: "filing-cabinet",label: "Filing Cabinet",group: "Storage",  defaultW: 6, defaultH: 6,
+    svgPath: "M0.06,0 L0.94,0 L0.94,1 L0.06,1Z M0.06,0.5 L0.94,0.5 M0.35,0.25 L0.65,0.25 M0.35,0.75 L0.65,0.75" },
+
+  // ── Safety & Structure (plan view) ──
+  { type: "fire-exit",    label: "Fire Exit",      group: "Safety & Structure", defaultW: 10, defaultH: 10,
+    svgPath: "M0,0 L0,0.06 L1,0.06 L1,0 M0,0 A1,1 0 0,0 1,1 M0.6,0.25 L0.8,0.4 L0.6,0.55" },
+  { type: "column",       label: "Column",         group: "Safety & Structure", defaultW: 6, defaultH: 6,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0,0 L1,1 M1,0 L0,1" },
+  { type: "planter",      label: "Planter",        group: "Safety & Structure", defaultW: 12, defaultH: 12,
+    svgPath: "M0.5,0.08 A0.42,0.42 0 1,1 0.49,0.08Z M0.5,0.25 L0.5,0.75 M0.25,0.5 L0.75,0.5 M0.3,0.3 L0.7,0.7 M0.7,0.3 L0.3,0.7" },
+  { type: "partition",    label: "Partition",       group: "Safety & Structure", defaultW: 40, defaultH: 3,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0,0.5 L1,0.5" },
+
+  // ── Outdoor / Landscaping ──
+  { type: "planter",      label: "Planter Box",    group: "Outdoor & Elements", defaultW: 20, defaultH: 5,
+    svgPath: "M0,0 L1,0 L1,1 L0,1Z M0.05,0.2 L0.95,0.2 L0.95,0.8 L0.05,0.8Z" },
+  { type: "tree1",        label: "Tree (Oval)",    group: "Outdoor & Elements", defaultW: 150, defaultH: 150,
+    svgPath: "M0.5,0.1 Q0.7,0.1 0.9,0.3 Q0.9,0.7 0.7,0.9 Q0.3,0.9 0.1,0.7 Q0.1,0.3 0.3,0.1 Z" },
+  { type: "tree2",        label: "Tree (Wide)",    group: "Outdoor & Elements", defaultW: 160, defaultH: 160,
+    svgPath: "M0.5,0.1 Q0.8,0.1 0.9,0.5 Q0.8,0.9 0.5,0.9 Q0.2,0.9 0.1,0.5 Q0.2,0.1 0.5,0.1 Z" },
+  { type: "tree3",        label: "Tree (Fluff)",   group: "Outdoor & Elements", defaultW: 150, defaultH: 150,
+    svgPath: "M0.5,0.1 A0.4,0.4 0 1,1 0.49,0.1Z" },
+  { type: "shrub",        label: "Shrub",          group: "Outdoor & Elements", defaultW: 15, defaultH: 15,
+    svgPath: "M0.5,0.1 Q0.8,0.1 0.9,0.5 Q0.8,0.9 0.5,0.9 Q0.2,0.9 0.1,0.5 Q0.2,0.1 0.5,0.1 Z" },
+];
+
+export interface FurnitureItem {
+  id: string;
+  type: FurnitureType;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  rotation: number; // degrees (0, 90, 180, 270)
+  floor: number;
+  label?: string;
+  flipX?: boolean;
+  flipY?: boolean;
+}
+
+export const defaultFurniture: FurnitureItem[] = [];
+
 // Floor plan annotation data
 export interface Annotation {
   id: string;
@@ -23,30 +222,30 @@ export interface Annotation {
 export const floorPlanAnnotations: Annotation[] = [
   {
     id: "records-cluster",
-    x: 20.5,
-    y: 18,
+    x: 18,
+    y: 45,
     label: "Civil Records & Assessment",
     shortLabel: "PR",
     description:
       "The West Wing (Columns A–C) houses public records and permitting offices: the Assessor's Office, Local Civil Registrar (LCR), and Licensing Office. Positioned near a secondary entry, this cluster allows citizens quick access for standard municipal documents and clearances without traversing the entire building.",
-    direction: "right",
+    direction: "left",
     area: "West Wing (Cols A–C)",
   },
   {
     id: "admin-services",
-    x: 22,
-    y: 54,
+    x: 21,
+    y: 25,
     label: "Admin & General Services",
     shortLabel: "GS",
     description:
       "The North-West administrative block contains the General Services Office and the Tourism Office. These departments handle internal municipal logistics, procurement, and local economic promotion, strategically placed near the Financial Services cluster for seamless backend operations.",
-    direction: "bottom",
+    direction: "top",
     area: "North Wing (Cols D–H)",
   },
   {
     id: "financial-services",
-    x: 91,
-    y: 46,
+    x: 40,
+    y: 40,
     label: "Financial Services Hub",
     shortLabel: "FS",
     description:
@@ -57,40 +256,40 @@ export const floorPlanAnnotations: Annotation[] = [
   {
     id: "engineering-wing",
     x: 75,
-    y: 18,
+    y: 25,
     label: "Engineering & Planning",
     shortLabel: "EP",
     description:
       "The North-East block is dedicated to infrastructure and development: the Office of the Municipal Architect, Building Official, and Municipal Engineer. This cluster processes building permits, structural inspections, and municipal construction planning.",
-    direction: "bottom",
+    direction: "top",
     area: "North-East Wing (Cols J–N)",
   },
   {
     id: "welfare-cluster",
-    x: 9,
-    y: 58,
+    x: 65,
+    y: 55,
     label: "Health & Social Welfare",
     shortLabel: "HW",
     description:
       "The South-East inner wing prioritizes citizen care, featuring the Municipal Health Office (with lactating area and medical storage), Senior Citizens & PWD Affairs, and the Municipal Social Welfare Office. Accessible directly from the main lobby to accommodate vulnerable demographics.",
-    direction: "left",
+    direction: "right",
     area: "South-East Inner (Cols L–N)",
   },
   {
     id: "enterprise-wing",
-    x: 92,
-    y: 32,
+    x: 83,
+    y: 50,
     label: "Enterprise & IT Center",
     shortLabel: "IT",
     description:
       "The far East Wing houses the IT Server Room & Data Center, securing the municipality's digital infrastructure. Adjacent are the Office of the Economic Enterprise and the Municipal Veterinary Office, completing the diverse ground-floor government services.",
-    direction: "left",
+    direction: "right",
     area: "East Wing (Cols O–Q)",
   },
   {
     id: "circulation",
     x: 50,
-    y: 76,
+    y: 80,
     label: "Central Lobby & Circulation",
     shortLabel: "CL",
     description:
