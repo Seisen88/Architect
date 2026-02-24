@@ -594,7 +594,6 @@ export default function AdminPage() {
                 {snapOn && zoom >= 2 && Array.from({ length: Math.floor(650/SNAP) }, (_, i) => <line key={`gh${i}`} x1="-30" y1={i*SNAP} x2="1250" y2={i*SNAP} stroke="#1a1916" strokeWidth="0.2"/>)}
 
                 <FloorPlanRenderer 
-                  x="-30" y="0" width="1280" height="650"
                   className="pointer-events-none"
                   rooms={filteredRooms} 
                   furniture={filteredFurniture} 
@@ -645,10 +644,10 @@ export default function AdminPage() {
                               return (
                                 <g key={`f-${r.id}`}>
                                   {r.shape === "circle" ? (
-                                    <ellipse cx={r.x + r.w / 2} cy={r.y + r.h / 2} rx={r.w / 2} ry={r.h / 2} fill="transparent" stroke="none"
+                                    <ellipse cx={r.x + r.w / 2} cy={r.y + r.h / 2} rx={r.w / 2} ry={r.h / 2} fill="rgba(0,0,0,0)" stroke="none"
                                       style={{ cursor: dragging?.id === r.id ? "grabbing" : "grab" }} onMouseDown={e => onItemDown(e, r.id, "room", "drag")} />
                                   ) : (
-                                    <rect x={r.x} y={r.y} width={r.w} height={r.h} fill="transparent" stroke="none"
+                                    <rect x={r.x} y={r.y} width={r.w} height={r.h} fill="rgba(0,0,0,0)" stroke="none"
                                       style={{ cursor: dragging?.id === r.id ? "grabbing" : "grab" }} onMouseDown={e => onItemDown(e, r.id, "room", "drag")} />
                                   )}
                                   {isSel && renderHandles(r, r.id, "room")}
@@ -686,7 +685,7 @@ export default function AdminPage() {
 
                   return (
                     <g key={fItem.id}>
-                      <FurnitureSVG key={`interact-${fItem.id}`} type={fItem.type} x={fItem.x} y={fItem.y} w={fItem.w} h={fItem.h} rotation={fItem.rotation} selected={false} color="transparent" flipX={fItem.flipX} flipY={fItem.flipY} label={fItem.label}
+                      <rect x={fItem.x} y={fItem.y} width={fItem.w} height={fItem.h} fill="rgba(0,0,0,0)" stroke="none"
                         style={{ cursor: dragging?.id === fItem.id ? "grabbing" : "grab" }}
                         onMouseDown={e => onItemDown(e, fItem.id, "furniture", "drag")} />
                       {isSel && renderHandles(fItem, fItem.id, "furniture")}
