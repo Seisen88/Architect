@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Interactive Library & Museum · New Government Center — Architecture Showcase",
+  title: "New Government Center, E.B. Magalona — Architecture Design Showcase",
   description:
-    "Architecture design showcase by Karl Angelo G. Sumog-oy, BS Architecture 5C, LCC Bacolod. Interactive Library & Museum · Himamaylan City and New Government Center · E.B. Magalona, Negros Occidental.",
+    "Architectural showcase by Erica Mae D. Pancho, BS Architecture 5C, LCC Bacolod. New Government Center for Enrique B. Magalona, Negros Occidental — Sheets A01–A05. Supervised by Ar. Gary Peter L. Bello, UAP.",
 };
 
 export default function RootLayout({

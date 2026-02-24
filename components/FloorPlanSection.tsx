@@ -9,28 +9,26 @@ export default function FloorPlanSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-4">
           <div>
-            <p className="text-architect-500 text-xs uppercase tracking-[0.3em] mb-3">01 — Floor Plan · Sheet A-03 to A-04</p>
-            <h2
-              className="font-serif text-4xl md:text-5xl text-stone-100"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
+            <p className="text-architect-500 text-xs uppercase tracking-[0.3em] mb-3">01 — Floor Plan · Sheet A 03 (Scale 1:200)</p>
+            <h2 className="font-serif text-4xl md:text-5xl text-stone-100" style={{ fontFamily: "'Playfair Display', serif" }}>
               Ground Floor Plan
-              <span className="block text-architect-400 italic text-3xl mt-1">Interactive Library &amp; Museum</span>
+              <span className="block text-architect-400 italic text-3xl mt-1">New Government Center, E. B. Magalona</span>
             </h2>
           </div>
           <p className="max-w-md text-stone-400 text-sm leading-relaxed">
             Click any <span className="text-architect-400 font-medium">guide arrow dot</span> to reveal the
-            architect's design rationale — from the Timber Screen Fins on the north façade to the Terracotta Workshop dimensions.
+            architect's design rationale — from the circular Grand Lobby void to the Integrated Services Hub layout.
           </p>
         </div>
 
         {/* Legend */}
         <div className="flex flex-wrap gap-4 mb-8">
           {[
-            { color: "bg-architect-500", label: "Exhibition / Gallery" },
-            { color: "bg-emerald-700", label: "Workshops" },
-            { color: "bg-blue-600", label: "Auditorium" },
-            { color: "bg-slate-500", label: "Admin / Office" },
+            { color: "bg-architect-500", label: "Executive / Admin" },
+            { color: "bg-blue-600", label: "Financial Services" },
+            { color: "bg-emerald-700", label: "Public Services" },
+            { color: "bg-slate-500", label: "Judicial / Legal" },
+            { color: "bg-amber-700", label: "Integrated Hub" },
           ].map((l) => (
             <div key={l.label} className="flex items-center gap-2">
               <span className={`w-3 h-3 rounded-sm ${l.color}`} />
@@ -48,121 +46,186 @@ export default function FloorPlanSection() {
           <svg
             viewBox="0 0 1000 620"
             className="absolute inset-0 w-full h-full"
-            aria-label="Interactive Library & Museum — Ground Floor Plan (Sheet A-03/A-04)"
+            aria-label="New Government Center — Ground Floor Plan (Sheet A03)"
           >
             {/* Background */}
             <rect width="1000" height="620" fill="#111110" />
 
-            {/* Grid */}
-            {Array.from({ length: 25 }, (_, i) => (
-              <line key={`gv${i}`} x1={i * 40} y1="0" x2={i * 40} y2="620" stroke="#1e1c1a" strokeWidth="0.5" />
-            ))}
-            {Array.from({ length: 16 }, (_, i) => (
-              <line key={`gh${i}`} x1="0" y1={i * 40} x2="1000" y2={i * 40} stroke="#1e1c1a" strokeWidth="0.5" />
-            ))}
+            {/* Column grid — A to Q horizontally */}
+            {["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q"].map((col, i) => {
+              const x = 60 + i * 53;
+              return (
+                <g key={col}>
+                  <line x1={x} y1="40" x2={x} y2="590" stroke="#1e1c1a" strokeWidth="0.7" />
+                  <text x={x} y="32" textAnchor="middle" fill="#3f3a35" fontSize="10" fontFamily="Inter">{col}</text>
+                </g>
+              );
+            })}
+            {/* Row grid — 1 to 12 vertically */}
+            {Array.from({ length: 12 }, (_, i) => {
+              const y = 50 + i * 46;
+              return (
+                <g key={i}>
+                  <line x1="40" y1={y} x2="960" y2={y} stroke="#1e1c1a" strokeWidth="0.7" />
+                  <text x="32" y={y + 4} textAnchor="middle" fill="#3f3a35" fontSize="10" fontFamily="Inter">{i + 1}</text>
+                </g>
+              );
+            })}
 
-            {/* Irregular outer wall — angular museum footprint */}
-            <polygon
-              points="60,100 440,60 700,80 740,300 700,560 240,560 60,420"
-              fill="none" stroke="#a8875e" strokeWidth="3"
-            />
+            {/* Outer building boundary */}
+            <rect x="60" y="50" width="900" height="530" fill="none" stroke="#a8875e" strokeWidth="2.5" />
 
-            {/* Entrance Lobby */}
-            <rect x="60" y="350" width="180" height="130" fill="rgba(168,135,94,0.12)" stroke="#a8875e" strokeWidth="1.5" />
-            <text x="105" y="415" fill="#a8875e" fontSize="10" fontFamily="Inter" opacity={0.8}>ENTRANCE</text>
-            <text x="110" y="428" fill="#a8875e" fontSize="10" fontFamily="Inter" opacity={0.8}>LOBBY</text>
+            {/* === WEST WING — Executive & Financial === */}
+            <rect x="60" y="50" width="290" height="530" fill="rgba(168,135,94,0.06)" stroke="#a8875e" strokeWidth="1" />
 
-            {/* Security */}
-            <rect x="60" y="280" width="120" height="70" fill="rgba(100,116,139,0.12)" stroke="#64748b" strokeWidth="1" />
-            <text x="75" y="318" fill="#64748b" fontSize="9" fontFamily="Inter">SECURITY</text>
+            {/* Office of the Mayor */}
+            <rect x="65" y="55" width="130" height="90" fill="rgba(168,135,94,0.18)" stroke="#a8875e" strokeWidth="1.5" />
+            <text x="100" y="98" fill="#a8875e" fontSize="9" fontFamily="Inter" opacity={0.9}>MAYOR'S</text>
+            <text x="100" y="110" fill="#a8875e" fontSize="9" fontFamily="Inter" opacity={0.9}>OFFICE</text>
 
-            {/* Permanent Core Gallery */}
-            <rect x="240" y="100" width="260" height="180" fill="rgba(168,135,94,0.14)" stroke="#a8875e" strokeWidth="2" />
-            <text x="295" y="188" fill="#a8875e" fontSize="10" fontFamily="Inter" opacity={0.8}>PERMANENT CORE</text>
-            <text x="305" y="202" fill="#a8875e" fontSize="10" fontFamily="Inter" opacity={0.8}>GALLERY</text>
+            {/* Office of the Vice Mayor */}
+            <rect x="195" y="55" width="155" height="90" fill="rgba(168,135,94,0.14)" stroke="#a8875e" strokeWidth="1.5" />
+            <text x="238" y="98" fill="#a8875e" fontSize="9" fontFamily="Inter" opacity={0.9}>VICE MAYOR'S</text>
+            <text x="245" y="110" fill="#a8875e" fontSize="9" fontFamily="Inter" opacity={0.9}>OFFICE</text>
 
-            {/* Interactive Zone */}
-            <rect x="500" y="80" width="200" height="160" fill="rgba(168,135,94,0.1)" stroke="#a8875e" strokeWidth="1.5" strokeDasharray="5 3" />
-            <text x="545" y="165" fill="#a8875e" fontSize="10" fontFamily="Inter" opacity={0.7}>INTERACTIVE</text>
-            <text x="558" y="178" fill="#a8875e" fontSize="10" fontFamily="Inter" opacity={0.7}>ZONE</text>
+            {/* SB Secretary */}
+            <rect x="65" y="145" width="285" height="60" fill="rgba(168,135,94,0.10)" stroke="#a8875e" strokeWidth="1" />
+            <text x="170" y="179" fill="#a8875e" fontSize="9" fontFamily="Inter" opacity={0.8}>SANGGUNIANG BAYAN SECRETARY</text>
 
-            {/* Museum Shop */}
-            <rect x="240" y="280" width="120" height="100" fill="rgba(100,116,139,0.1)" stroke="#64748b" strokeWidth="1" />
-            <text x="265" y="333" fill="#64748b" fontSize="9" fontFamily="Inter">MUSEUM</text>
-            <text x="268" y="346" fill="#64748b" fontSize="9" fontFamily="Inter">SHOP</text>
+            {/* Treasury */}
+            <rect x="65" y="205" width="140" height="80" fill="rgba(37,99,235,0.14)" stroke="#3b82f6" strokeWidth="1.5" />
+            <text x="110" y="245" fill="#60a5fa" fontSize="9" fontFamily="Inter">TREASURY</text>
 
-            {/* Auditorium */}
-            <rect x="500" y="240" width="220" height="220" fill="rgba(37,99,235,0.12)" stroke="#3b82f6" strokeWidth="2" />
-            <text x="565" y="355" fill="#60a5fa" fontSize="11" fontFamily="Inter" opacity={0.8}>AUDITORIUM</text>
-            {/* Tiered seating lines */}
-            {[0,1,2,3,4].map(r => (
-              <rect key={`s${r}`} x={520 + r*22} y={270 + r*10} width={180 - r*20} height="12" fill="rgba(59,130,246,0.08)" stroke="#3b82f6" strokeWidth="0.5" />
-            ))}
+            {/* Accounting */}
+            <rect x="205" y="205" width="145" height="80" fill="rgba(37,99,235,0.12)" stroke="#3b82f6" strokeWidth="1.5" />
+            <text x="250" y="245" fill="#60a5fa" fontSize="9" fontFamily="Inter">ACCOUNTING</text>
 
-            {/* Exhibit Halls 1-4 */}
-            <rect x="60" y="100" width="180" height="180" fill="rgba(168,135,94,0.10)" stroke="#a8875e" strokeWidth="1.5" />
-            <text x="100" y="187" fill="#a8875e" fontSize="10" fontFamily="Inter" opacity={0.7}>EXHIBIT</text>
-            <text x="98" y="200" fill="#a8875e" fontSize="10" fontFamily="Inter" opacity={0.7}>HALLS 1-4</text>
-            <line x1="150" y1="100" x2="150" y2="280" stroke="#a8875e" strokeWidth="0.8" strokeDasharray="3 3" />
-            <line x1="60" y1="190" x2="240" y2="190" stroke="#a8875e" strokeWidth="0.8" strokeDasharray="3 3" />
+            {/* Budget */}
+            <rect x="65" y="285" width="100" height="75" fill="rgba(37,99,235,0.10)" stroke="#3b82f6" strokeWidth="1" />
+            <text x="95" y="326" fill="#60a5fa" fontSize="9" fontFamily="Inter">BUDGET</text>
 
-            {/* Wood Workshop */}
-            <rect x="60" y="420" width="120" height="140" fill="rgba(21,128,61,0.12)" stroke="#16a34a" strokeWidth="1.5" />
-            <text x="72" y="490" fill="#22c55e" fontSize="9" fontFamily="Inter" opacity={0.8}>WOOD W/S</text>
-            <text x="72" y="503" fill="#15803d" fontSize="8" fontFamily="Inter">10 × 20m</text>
+            {/* Assessor */}
+            <rect x="165" y="285" width="100" height="75" fill="rgba(37,99,235,0.10)" stroke="#3b82f6" strokeWidth="1" />
+            <text x="190" y="326" fill="#60a5fa" fontSize="9" fontFamily="Inter">ASSESSOR</text>
 
-            {/* Metal Workshop */}
-            <rect x="180" y="420" width="120" height="140" fill="rgba(21,128,61,0.10)" stroke="#16a34a" strokeWidth="1.5" />
-            <text x="192" y="490" fill="#22c55e" fontSize="9" fontFamily="Inter" opacity={0.8}>METAL W/S</text>
-            <text x="192" y="503" fill="#15803d" fontSize="8" fontFamily="Inter">10 × 20m</text>
+            {/* MPDC */}
+            <rect x="265" y="285" width="85" height="75" fill="rgba(37,99,235,0.10)" stroke="#3b82f6" strokeWidth="1" />
+            <text x="280" y="326" fill="#60a5fa" fontSize="8" fontFamily="Inter">MPDC</text>
 
-            {/* Terracotta Workshop */}
-            <rect x="300" y="420" width="110" height="140" fill="rgba(21,128,61,0.10)" stroke="#16a34a" strokeWidth="1.5" />
-            <text x="310" y="490" fill="#22c55e" fontSize="9" fontFamily="Inter" opacity={0.8}>TERRACOTTA</text>
-            <text x="316" y="503" fill="#15803d" fontSize="8" fontFamily="Inter">9 × 20m</text>
+            {/* Business Permit & Licensing */}
+            <rect x="65" y="360" width="285" height="60" fill="rgba(245,158,11,0.14)" stroke="#d97706" strokeWidth="1.5" />
+            <text x="150" y="394" fill="#fbbf24" fontSize="9" fontFamily="Inter">BUSINESS PERMIT &amp; LICENSING</text>
 
-            {/* Director's Chamber */}
-            <rect x="600" y="80" width="120" height="120" fill="rgba(100,116,139,0.14)" stroke="#64748b" strokeWidth="1.5" />
-            <text x="618" y="133" fill="#94a3b8" fontSize="9" fontFamily="Inter">DIR. GEN.</text>
-            <text x="618" y="146" fill="#94a3b8" fontSize="9" fontFamily="Inter">CHAMBER</text>
-            <text x="624" y="159" fill="#475569" fontSize="8" fontFamily="Inter">5 × 7m</text>
+            {/* MSWDO / HR / Records */}
+            <rect x="65" y="420" width="130" height="80" fill="rgba(21,128,61,0.12)" stroke="#16a34a" strokeWidth="1" />
+            <text x="82" y="460" fill="#22c55e" fontSize="8" fontFamily="Inter">MSWDO</text>
 
-            {/* Artifact Storage */}
-            <rect x="410" y="380" width="90" height="100" fill="rgba(100,116,139,0.10)" stroke="#64748b" strokeWidth="1" />
-            <text x="418" y="430" fill="#64748b" fontSize="8" fontFamily="Inter">ARTIFACT</text>
-            <text x="418" y="442" fill="#64748b" fontSize="8" fontFamily="Inter">STORAGE</text>
+            <rect x="195" y="420" width="80" height="80" fill="rgba(21,128,61,0.10)" stroke="#16a34a" strokeWidth="1" />
+            <text x="214" y="460" fill="#22c55e" fontSize="8" fontFamily="Inter">HR</text>
 
-            {/* Info desk */}
-            <ellipse cx="150" cy="340" rx="35" ry="18" fill="rgba(168,135,94,0.15)" stroke="#a8875e" strokeWidth="1" />
-            <text x="116" y="344" fill="#a8875e" fontSize="8" fontFamily="Inter">INFO DESK</text>
+            <rect x="275" y="420" width="75" height="80" fill="rgba(21,128,61,0.10)" stroke="#16a34a" strokeWidth="1" />
+            <text x="285" y="460" fill="#22c55e" fontSize="8" fontFamily="Inter">RECORDS</text>
+
+            {/* Staff rooms / Comcen */}
+            <rect x="65" y="500" width="285" height="75" fill="rgba(100,116,139,0.10)" stroke="#64748b" strokeWidth="1" />
+            <text x="135" y="537" fill="#94a3b8" fontSize="9" fontFamily="Inter">COMCEN · ELECTRICAL RM · STAFF</text>
+
+            {/* === CENTRAL — Grand Lobby (Circular void) === */}
+            <rect x="350" y="50" width="300" height="530" fill="rgba(255,255,255,0.02)" />
+            <circle cx="500" cy="330" r="110" fill="rgba(168,135,94,0.06)" stroke="#a8875e" strokeWidth="2" strokeDasharray="6 4" />
+            <text x="500" y="325" textAnchor="middle" fill="#a8875e" fontSize="12" fontFamily="Inter" fontWeight="600">GRAND</text>
+            <text x="500" y="342" textAnchor="middle" fill="#a8875e" fontSize="12" fontFamily="Inter" fontWeight="600">LOBBY</text>
+            <text x="500" y="358" textAnchor="middle" fill="#6b5840" fontSize="9" fontFamily="Inter">Circular Void</text>
+
+            {/* Guard House */}
+            <rect x="370" y="55" width="80" height="60" fill="rgba(100,116,139,0.12)" stroke="#64748b" strokeWidth="1" />
+            <text x="395" y="88" fill="#94a3b8" fontSize="8" fontFamily="Inter">GUARD</text>
+
+            {/* Elevator + Stairs */}
+            <rect x="460" y="55" width="80" height="60" fill="rgba(168,135,94,0.10)" stroke="#a8875e" strokeWidth="1" />
+            <text x="476" y="82" fill="#a8875e" fontSize="8" fontFamily="Inter">LIFT</text>
+            <text x="476" y="94" fill="#a8875e" fontSize="8" fontFamily="Inter">STAIRS</text>
+
+            {/* PWD Ramps */}
+            <rect x="552" y="55" width="90" height="60" fill="rgba(21,128,61,0.10)" stroke="#16a34a" strokeWidth="1" />
+            <text x="570" y="82" fill="#22c55e" fontSize="8" fontFamily="Inter">PWD</text>
+            <text x="570" y="94" fill="#22c55e" fontSize="8" fontFamily="Inter">RAMPS</text>
+
+            {/* Conference Rooms */}
+            <rect x="360" y="486" width="140" height="88" fill="rgba(100,116,139,0.10)" stroke="#64748b" strokeWidth="1" />
+            <text x="400" y="532" fill="#94a3b8" fontSize="9" fontFamily="Inter">CONFERENCE</text>
+
+            <rect x="502" y="486" width="140" height="88" fill="rgba(100,116,139,0.10)" stroke="#64748b" strokeWidth="1" />
+            <text x="542" y="532" fill="#94a3b8" fontSize="9" fontFamily="Inter">STORAGE</text>
+
+            {/* === EAST WING — Public Services === */}
+            <rect x="650" y="50" width="310" height="530" fill="rgba(21,128,61,0.04)" stroke="#a8875e" strokeWidth="1" />
+
+            {/* LCR */}
+            <rect x="655" y="55" width="145" height="80" fill="rgba(21,128,61,0.14)" stroke="#16a34a" strokeWidth="1.5" />
+            <text x="712" y="99" fill="#22c55e" fontSize="9" fontFamily="Inter">LCR</text>
+
+            {/* Agriculture */}
+            <rect x="800" y="55" width="155" height="80" fill="rgba(21,128,61,0.12)" stroke="#16a34a" strokeWidth="1.5" />
+            <text x="850" y="99" fill="#22c55e" fontSize="9" fontFamily="Inter">AGRICULTURE</text>
+
+            {/* Engineering */}
+            <rect x="655" y="135" width="145" height="80" fill="rgba(21,128,61,0.10)" stroke="#16a34a" strokeWidth="1" />
+            <text x="700" y="179" fill="#22c55e" fontSize="9" fontFamily="Inter">ENGINEERING</text>
+
+            {/* MENRO */}
+            <rect x="800" y="135" width="155" height="80" fill="rgba(21,128,61,0.10)" stroke="#16a34a" strokeWidth="1" />
+            <text x="848" y="179" fill="#22c55e" fontSize="9" fontFamily="Inter">MENRO</text>
+
+            {/* BIR */}
+            <rect x="655" y="215" width="100" height="75" fill="rgba(245,158,11,0.14)" stroke="#d97706" strokeWidth="1.5" />
+            <text x="690" y="256" fill="#fbbf24" fontSize="9" fontFamily="Inter">BIR</text>
+
+            {/* LTO */}
+            <rect x="755" y="215" width="100" height="75" fill="rgba(245,158,11,0.12)" stroke="#d97706" strokeWidth="1.5" />
+            <text x="790" y="256" fill="#fbbf24" fontSize="9" fontFamily="Inter">LTO</text>
+
+            {/* PhilHealth */}
+            <rect x="855" y="215" width="100" height="75" fill="rgba(245,158,11,0.12)" stroke="#d97706" strokeWidth="1.5" />
+            <text x="880" y="256" fill="#fbbf24" fontSize="8" fontFamily="Inter">PHILHEALTH</text>
+
+            {/* Post Office */}
+            <rect x="655" y="290" width="145" height="70" fill="rgba(245,158,11,0.10)" stroke="#d97706" strokeWidth="1" />
+            <text x="700" y="328" fill="#fbbf24" fontSize="9" fontFamily="Inter">POST OFFICE</text>
+
+            {/* Toilets */}
+            <rect x="800" y="290" width="155" height="70" fill="rgba(100,116,139,0.10)" stroke="#64748b" strokeWidth="1" />
+            <text x="848" y="328" fill="#94a3b8" fontSize="9" fontFamily="Inter">M/F TOILETS</text>
+
+            {/* Storage / Electrical east */}
+            <rect x="655" y="360" width="300" height="60" fill="rgba(100,116,139,0.08)" stroke="#64748b" strokeWidth="1" />
+            <text x="775" y="394" fill="#64748b" fontSize="9" fontFamily="Inter">STORAGE · ELECTRICAL RM</text>
+
+            {/* Staff rooms east */}
+            <rect x="655" y="420" width="300" height="160" fill="rgba(100,116,139,0.08)" stroke="#64748b" strokeWidth="1" />
+            <text x="780" y="505" fill="#64748b" fontSize="9" fontFamily="Inter">STAFF ROOMS · PANTRY</text>
 
             {/* North arrow */}
-            <g transform="translate(948 80)">
+            <g transform="translate(948 86)">
               <circle cx="0" cy="0" r="24" fill="none" stroke="#3f3a35" strokeWidth="1" />
               <path d="M0-18 L4 6 L0 2 L-4 6Z" fill="#a8875e" />
               <path d="M0-18 L-4 6 L0 2 L4 6Z" fill="#3f3a35" />
               <text x="0" y="26" textAnchor="middle" fill="#a8875e" fontSize="9" fontFamily="Inter" fontWeight="bold">N</text>
             </g>
 
-            {/* Scale bar */}
-            <g transform="translate(80 598)">
-              <line x1="0" y1="0" x2="200" y2="0" stroke="#57514a" strokeWidth="1" />
+            {/* Scale bar — 1:200 */}
+            <g transform="translate(80 605)">
+              <line x1="0" y1="0" x2="160" y2="0" stroke="#57514a" strokeWidth="1" />
               <line x1="0" y1="-4" x2="0" y2="4" stroke="#57514a" strokeWidth="1" />
-              <line x1="100" y1="-4" x2="100" y2="4" stroke="#57514a" strokeWidth="1" />
-              <line x1="200" y1="-4" x2="200" y2="4" stroke="#57514a" strokeWidth="1" />
+              <line x1="80" y1="-4" x2="80" y2="4" stroke="#57514a" strokeWidth="1" />
+              <line x1="160" y1="-4" x2="160" y2="4" stroke="#57514a" strokeWidth="1" />
               <text x="0" y="14" fill="#57514a" fontSize="8" fontFamily="Inter">0</text>
-              <text x="90" y="14" fill="#57514a" fontSize="8" fontFamily="Inter">10m</text>
-              <text x="188" y="14" fill="#57514a" fontSize="8" fontFamily="Inter">20m</text>
+              <text x="72" y="14" fill="#57514a" fontSize="8" fontFamily="Inter">10m</text>
+              <text x="151" y="14" fill="#57514a" fontSize="8" fontFamily="Inter">20m</text>
             </g>
 
             {/* Sheet label */}
-            <text x="840" y="600" fill="#3f3a35" fontSize="9" fontFamily="Inter">Sheet A-03/A-04 · Scale 1:500 MTS</text>
-
-            {/* Frontage dimension */}
-            <line x1="60" y1="32" x2="700" y2="32" stroke="#57514a" strokeWidth="0.8" />
-            <line x1="60" y1="26" x2="60" y2="38" stroke="#57514a" strokeWidth="0.8" />
-            <line x1="700" y1="26" x2="700" y2="38" stroke="#57514a" strokeWidth="0.8" />
-            <text x="365" y="26" textAnchor="middle" fill="#57514a" fontSize="9" fontFamily="Inter">42.61m (key segment) + compound footprint</text>
+            <text x="840" y="615" fill="#3f3a35" fontSize="9" fontFamily="Inter">Sheet A03 · Ground Floor Plan · Scale 1:200</text>
           </svg>
 
           {/* Guide Arrow overlays */}
@@ -173,7 +236,7 @@ export default function FloorPlanSection() {
 
         {/* Caption */}
         <p className="mt-4 text-xs text-stone-600 text-right">
-          Sheet A-03/A-04 — Interactive Library &amp; Museum, Himamaylan City · Karl Angelo G. Sumog-oy · Scale 1:500 MTS
+          Sheet A 03 — Ground Floor Plan 1:200 &nbsp;|&nbsp; New Government Center for E. B. Magalona &nbsp;|&nbsp; Erica Mae D. Pancho, BS Architecture 5C &nbsp;|&nbsp; Ar. Gary Peter L. Bello, UAP
         </p>
       </div>
     </section>
