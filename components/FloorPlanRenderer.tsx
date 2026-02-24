@@ -27,6 +27,11 @@ interface Props {
   className?: string;
   floorColor?: string;
   activeFloor?: number | "all" | null;
+  width?: number | string;
+  height?: number | string;
+  x?: number | string;
+  y?: number | string;
+  showRooms?: boolean;
 }
 
 export default function FloorPlanRenderer({
@@ -40,12 +45,21 @@ export default function FloorPlanRenderer({
   showFurniture = true,
   showReferences = true,
   className = "",
-  floorColor = "rgba(26,24,22,0.15)",
+  floorColor = "rgba(18,18,20,0.5)",
   activeFloor = 1,
+  width,
+  height,
+  x,
+  y,
+  showRooms = true,
 }: Props) {
   return (
     <svg
-      viewBox="0 0 1250 605"
+      viewBox="-30 0 1280 650"
+      width={width}
+      height={height}
+      x={x}
+      y={y}
       className={`w-full h-full ${className}`}
       aria-label="New Government Center — Ground Floor Plan Sheet A03"
     >
@@ -56,9 +70,9 @@ export default function FloorPlanRenderer({
       </defs>
 
       {/* Background layer */}
-      <rect width="1250" height="605" fill="#0f0e0c" />
-      <rect width="1250" height="605" fill={floorColor} />
-      {showGrid && <rect width="1250" height="605" fill="url(#fpgrid)" />}
+      <rect x="-30" width="1280" height="650" fill="#0f0e0c" />
+      <rect x="-30" width="1280" height="650" fill={floorColor} />
+      {showGrid && <rect x="-30" width="1280" height="650" fill="url(#fpgrid)" />}
 
       {/* Column grid A–Q */}
       {showGrid && showReferences && COL_GRID.map(([col, x]) => (
@@ -99,7 +113,7 @@ export default function FloorPlanRenderer({
       )}
 
       {/* ─── ROOMS ─── */}
-      {rooms.map((room, index, arr) => {
+      {showRooms && rooms.map((room, index, arr) => {
         const isGrouped = !!room.group;
         // Make sure we only map the group ONCE, when the first room of the group is encountered
         if (isGrouped && arr.findIndex(r => r.group === room.group) !== index) return null;
@@ -245,7 +259,7 @@ export default function FloorPlanRenderer({
 
       {/* Scale bar */}
       {showGrid && (
-        <g transform="translate(300 598)">
+        <g transform="translate(300 640)">
           <line x1="0" y1="0" x2="200" y2="0" stroke="#57514a" strokeWidth="1"/>
           <line x1="0" y1="-4" x2="0" y2="4" stroke="#57514a" strokeWidth="1"/>
           <line x1="100" y1="-4" x2="100" y2="4" stroke="#57514a" strokeWidth="1"/>
@@ -257,7 +271,7 @@ export default function FloorPlanRenderer({
       )}
 
       {showGrid && (
-        <text x="850" y="598" fill="#3f3a35" fontSize="9" fontFamily="Inter">
+        <text x="850" y="640" fill="#3f3a35" fontSize="9" fontFamily="Inter">
           {activeFloor === "all" || activeFloor === null ? "Sheet A 03–05  ·  All Floors" : activeFloor === 1 ? "Sheet A 03  ·  Ground Floor Plan" : activeFloor === 2 ? "Sheet A 04  ·  Second Floor Plan" : "Sheet A 05  ·  Third Floor Plan"}  ·  Scale 1:200
         </text>
       )}

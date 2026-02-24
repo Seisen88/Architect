@@ -583,54 +583,27 @@ export default function AdminPage() {
           <div className="inline-block origin-top-left p-4" style={{ transform: `translate(${pan.x}px,${pan.y}px) scale(${zoom})`, transformOrigin: "0 0" }}>
             <div className="bg-stone-900 border border-stone-800">
               {viewMode === "3d" ? (
-                <div style={{ width: 1250, height: 605, overflow: 'hidden' }}>
+                <div style={{ width: 1250, height: 635, overflow: 'hidden' }}>
                   <PerspectiveFloorView rooms={rooms} furniture={furniture} />
                 </div>
               ) : (
-                <svg ref={svgRef} viewBox="-10 0 1250 605" width="1250" height="605" className="block" onMouseDown={onCanvasDown}>
+                <svg ref={svgRef} viewBox="-30 0 1280 650" width="1250" height="635" className="block" onMouseDown={onCanvasDown}>
                 <defs><pattern id="eg" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M 4 0 L 0 0 0 4" fill="none" stroke="#1a1916" strokeWidth="0.4"/></pattern></defs>
-                <rect data-bg="1" width="1250" height="605" fill="#0f0e0c"/>
-                <rect data-bg="floor" width="1150" height="605" fill={floorColor} />
-                <rect data-bg="1" width="1150" height="605" fill="url(#eg)"/>
 
-                {snapOn && zoom >= 2 && Array.from({ length: Math.floor(1250/SNAP) }, (_, i) => <line key={`gv${i}`} x1={i*SNAP} y1="0" x2={i*SNAP} y2="605" stroke="#1a1916" strokeWidth="0.2"/>)}
-                {snapOn && zoom >= 2 && Array.from({ length: Math.floor(605/SNAP) }, (_, i) => <line key={`gh${i}`} x1="0" y1={i*SNAP} x2="1250" y2={i*SNAP} stroke="#1a1916" strokeWidth="0.2"/>)}
-
-                {/* Column grid */}
-                {[["A",50], ["B",106], ["C",155], ["D",259], ["E",316], ["F",354], ["G",403], ["H",474], ["I",540], ["J",691], ["K",755], ["L",828], ["M",901], ["N",975], ["O",1065], ["P",1114], ["Q",1167]].map(([c,x])=>(
-                  <g key={c as string}>
-                    <line x1={x as number} y1={26} x2={x as number} y2={580} stroke="#3f3a35" strokeWidth={0.5} strokeDasharray="3 3"/>
-                    <circle cx={x as number} cy={16} r={10} fill="#0f0e0c" stroke="#3f3a35" strokeWidth={1}/>
-                    <text x={x as number} y={20} textAnchor="middle" fill="#3f3a35" fontSize="10" fontFamily="Inter">{c}</text>
-                  </g>
-                ))}
-                {[[1,50], [2,89], [3,149], [4,184], [5,235], [6,272], [7,320], [8,358], [9,440], [10,465], [12,508]].map(([r,y])=>(
-                  <g key={r}>
-                    <line x1={40} y1={y} x2={1230} y2={y} stroke="#3f3a35" strokeWidth={0.5} strokeDasharray="3 3"/>
-                    <circle cx={30} cy={y} r={10} fill="#0f0e0c" stroke="#3f3a35" strokeWidth={1}/>
-                    <text x={30} y={y+4} textAnchor="middle" fill="#3f3a35" fontSize="10" fontFamily="Inter">{r}</text>
-                  </g>
-                ))}
-
-                {/* Wing outlines */}
-                <rect x="50" y="30" width="258" height="530" fill="none" stroke="#2a2520" strokeWidth="1.5" strokeDasharray="4 4"/>
-                <rect x="308" y="30" width="593" height="530" fill="none" stroke="#2a2520" strokeWidth="1.5" strokeDasharray="4 4"/>
-                <rect x="901" y="30" width="266" height="530" fill="none" stroke="#2a2520" strokeWidth="1.5" strokeDasharray="4 4"/>
-                <rect x="460" y="30" width="295" height="395" fill="none" stroke="#1f1d1a" strokeWidth="1" strokeDasharray="4 4"/>
-                <g transform="translate(28 228)"><circle cx="0" cy="0" r="14" fill="none" stroke="#3f3a35" strokeWidth="1"/><path d="M0-11 L3 4 L0 1 L-3 4Z" fill="#a8875e"/><text x="0" y="22" textAnchor="middle" fill="#a8875e" fontSize="8" fontFamily="Inter" fontWeight="bold">N</text></g>
-                <g transform="translate(625 302.5)" opacity="0">
-                  <rect x="-625" y="-302.5" width="1250" height="605" fill="none" pointerEvents="none" />
-                </g>
+                {snapOn && zoom >= 2 && Array.from({ length: Math.floor(1280/SNAP) }, (_, i) => <line key={`gv${i}`} x1={-30 + i*SNAP} y1="0" x2={-30 + i*SNAP} y2="650" stroke="#1a1916" strokeWidth="0.2"/>)}
+                {snapOn && zoom >= 2 && Array.from({ length: Math.floor(650/SNAP) }, (_, i) => <line key={`gh${i}`} x1="-30" y1={i*SNAP} x2="1250" y2={i*SNAP} stroke="#1a1916" strokeWidth="0.2"/>)}
 
                 <FloorPlanRenderer 
+                  x="-30" y="0" width="1280" height="650"
                   className="pointer-events-none"
                   rooms={filteredRooms} 
                   furniture={filteredFurniture} 
                   selectedId={selKind === "room" ? Array.from(selection)[0] : null}
                   floorColor={floorColor}
-                  showFurniture={false} // Disable base furniture to prevent ghosting
+                  showFurniture={true}
                   activeFloor={activeFloor}
                 />
+
 
                 {/* Overlays for interaction (drag handles etc) */}
                 {/* ── ROOMS ── */}
@@ -655,23 +628,7 @@ export default function AdminPage() {
                         </defs>
                       )}
 
-                      {/* Strokes Layer */}
-                      <g mask={isGrouped ? `url(#mask-group-admin-${room.group})` : undefined}>
-                        {renderRooms.map(r => {
-                          const c = ROOM_COLORS[r.category] || ROOM_COLORS["support"]; // Fallback
-                          const isSel = selKind === "room" && selection.has(r.id);
-                          const strokeCol = isSel ? "#fff" : c.stroke;
-                          const sw = isSel ? 2.5 : 1;
-                          const strokeW = isGrouped ? sw * 2 : sw;
-                          return r.shape === "circle" ? (
-                            <ellipse key={`s-${r.id}`} cx={r.x + r.w / 2} cy={r.y + r.h / 2} rx={r.w / 2} ry={r.h / 2} fill="none" stroke={strokeCol} strokeWidth={strokeW} />
-                          ) : (
-                            <rect key={`s-${r.id}`} x={r.x} y={r.y} width={r.w} height={r.h} fill="none" stroke={strokeCol} strokeWidth={strokeW} rx={1} />
-                          );
-                        })}
-                      </g>
-
-                      {/* Fills Layer */}
+                      {/* Fills Layer (Interaction Layer) */}
                       {(() => {
                         const firstCat = ROOM_COLORS[renderRooms[0].category] || ROOM_COLORS["support"]; // Fallback
                         const match = firstCat.fill.match(/rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/);
@@ -688,10 +645,10 @@ export default function AdminPage() {
                               return (
                                 <g key={`f-${r.id}`}>
                                   {r.shape === "circle" ? (
-                                    <ellipse cx={r.x + r.w / 2} cy={r.y + r.h / 2} rx={r.w / 2} ry={r.h / 2} fill={solidFill} stroke="none"
+                                    <ellipse cx={r.x + r.w / 2} cy={r.y + r.h / 2} rx={r.w / 2} ry={r.h / 2} fill="transparent" stroke="none"
                                       style={{ cursor: dragging?.id === r.id ? "grabbing" : "grab" }} onMouseDown={e => onItemDown(e, r.id, "room", "drag")} />
                                   ) : (
-                                    <rect x={r.x} y={r.y} width={r.w} height={r.h} fill={solidFill} stroke="none" rx={1}
+                                    <rect x={r.x} y={r.y} width={r.w} height={r.h} fill="transparent" stroke="none"
                                       style={{ cursor: dragging?.id === r.id ? "grabbing" : "grab" }} onMouseDown={e => onItemDown(e, r.id, "room", "drag")} />
                                   )}
                                   {isSel && renderHandles(r, r.id, "room")}
@@ -729,10 +686,9 @@ export default function AdminPage() {
 
                   return (
                     <g key={fItem.id}>
-                      <rect x={fItem.x} y={fItem.y} width={fItem.w} height={fItem.h} fill="transparent" stroke="none"
+                      <FurnitureSVG key={`interact-${fItem.id}`} type={fItem.type} x={fItem.x} y={fItem.y} w={fItem.w} h={fItem.h} rotation={fItem.rotation} selected={false} color="transparent" flipX={fItem.flipX} flipY={fItem.flipY} label={fItem.label}
                         style={{ cursor: dragging?.id === fItem.id ? "grabbing" : "grab" }}
                         onMouseDown={e => onItemDown(e, fItem.id, "furniture", "drag")} />
-                      <FurnitureSVG type={fItem.type} x={fItem.x} y={fItem.y} w={fItem.w} h={fItem.h} rotation={fItem.rotation} selected={isSel} label={fItem.label} flipX={fItem.flipX} flipY={fItem.flipY} color={furnColor} />
                       {isSel && renderHandles(fItem, fItem.id, "furniture")}
                     </g>
                   );
@@ -743,8 +699,7 @@ export default function AdminPage() {
                   <rect x={mRect.x} y={mRect.y} width={mRect.w} height={mRect.h} fill="rgba(0,120,215,0.25)" stroke="#0078d7" strokeWidth="1"/>
                 )}
 
-                <g transform="translate(200 598)"><line x1="0" y1="0" x2="200" y2="0" stroke="#57514a" strokeWidth="1"/><text x="0" y="14" fill="#57514a" fontSize="8" fontFamily="Inter">0</text><text x="190" y="14" fill="#57514a" fontSize="8" fontFamily="Inter">20m</text></g>
-                <text x="760" y="598" fill="#3f3a35" fontSize="9" fontFamily="Inter">{activeFloor === "all" ? "Sheet A 03–05 · All Floors" : activeFloor === 1 ? "Sheet A 03 · Ground Floor Plan" : activeFloor === 2 ? "Sheet A 04 · Second Floor Plan" : "Sheet A 05 · Third Floor Plan"} · Scale 1:200</text>
+
               </svg>
               )}
             </div>
