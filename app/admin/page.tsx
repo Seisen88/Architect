@@ -160,6 +160,9 @@ export default function AdminPage() {
   const [clipboard, setClipboard] = useState<{ rooms: Room[]; furniture: FurnitureItem[] }>({ rooms: [], furniture: [] });
   const [copied, setCopied] = useState(false);
 
+  // Floor-level copy/paste
+  const [floorClipboard, setFloorClipboard] = useState<{ rooms: Room[]; furniture: FurnitureItem[]; sourceFloor: number | "all" } | null>(null);
+
   const [isMarquee, setIsMarquee] = useState(false);
   const [marquee, setMarquee] = useState<{ x1: number, y1: number, x2: number, y2: number } | null>(null);
 
@@ -278,6 +281,15 @@ export default function AdminPage() {
   }, [svgPt, pan]);
 
   const onItemDown = useCallback((e: React.MouseEvent, id: string, kind: SelKind, mode: string) => {
+    // Middle-click → hand off to canvas pan, never drag/resize items
+    if (e.button === 1) {
+      e.preventDefault();
+      setIsPan(true);
+      setPanSt({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+      return;
+    }
+    // Only left-click should select / drag / resize
+    if (e.button !== 0) return;
     e.stopPropagation();
     const pt = svgPt(e.clientX, e.clientY);
     const item = kind === "room" ? rooms.find(r => r.id === id) : furniture.find(f => f.id === id);
@@ -298,7 +310,7 @@ export default function AdminPage() {
       setResizing({ id, kind, dir: mode });
       setResizeStart({ x: item.x, y: item.y, w: item.w, h: item.h, sx: pt.x, sy: pt.y });
     }
-  }, [svgPt, rooms, furniture, selection]);
+  }, [svgPt, rooms, furniture, selection, pan, setPanSt]);
 
   const onMouseMove = useCallback((e: React.MouseEvent) => {
     if (isPan) { setPan({ x: e.clientX - panSt.x, y: e.clientY - panSt.y }); return; }
@@ -346,14 +358,16 @@ export default function AdminPage() {
     } else if (resizing && resizeStart) {
       const dx = pt.x - resizeStart.sx, dy = pt.y - resizeStart.sy;
       const d = resizing.dir;
+      const minW = resizing.kind === "furniture" ? 1 : 10;
+      const minH = resizing.kind === "furniture" ? 1 : 8;
       const calc = () => {
         let nx = resizeStart.x, ny = resizeStart.y, nw = resizeStart.w, nh = resizeStart.h;
-        if (d.includes("e")) nw = Math.max(10, resizeStart.w + dx);
-        if (d.includes("w")) { const dw = Math.min(dx, resizeStart.w - 10); nx = resizeStart.x + dw; nw = resizeStart.w - dw; }
-        if (d.includes("s")) nh = Math.max(8, resizeStart.h + dy);
-        if (d.includes("n")) { const dh = Math.min(dy, resizeStart.h - 8); ny = resizeStart.y + dh; nh = resizeStart.h - dh; }
+        if (d.includes("e")) nw = Math.max(minW, resizeStart.w + dx);
+        if (d.includes("w")) { const dw = Math.min(dx, resizeStart.w - minW); nx = resizeStart.x + dw; nw = resizeStart.w - dw; }
+        if (d.includes("s")) nh = Math.max(minH, resizeStart.h + dy);
+        if (d.includes("n")) { const dh = Math.min(dy, resizeStart.h - minH); ny = resizeStart.y + dh; nh = resizeStart.h - dh; }
         if (snapOn) { nx = snap(nx); ny = snap(ny); nw = snap(nw); nh = snap(nh); }
-        return { x: Math.round(nx), y: Math.round(ny), w: Math.max(10, Math.round(nw)), h: Math.max(8, Math.round(nh)) };
+        return { x: Math.round(nx), y: Math.round(ny), w: Math.max(minW, Math.round(nw)), h: Math.max(minH, Math.round(nh)) };
       };
       const n = calc();
       if (resizing.kind === "room") push({ rooms: rooms.map(r => r.id === resizing.id ? { ...r, ...n } : r), furniture });
@@ -436,6 +450,67 @@ export default function AdminPage() {
     commitRooms(p => p.map(r => selection.has(r.id) ? { ...r, group: undefined } : r));
   };
 
+  // Layer ordering helpers — work on rooms or furniture
+  const reorder = (arr: any[], ids: Set<string>, dir: "front" | "back" | "forward" | "backward") => {
+    const sel = arr.filter(i => ids.has(i.id));
+    const rest = arr.filter(i => !ids.has(i.id));
+    if (dir === "front")   return [...rest, ...sel];
+    if (dir === "back")    return [...sel, ...rest];
+    if (dir === "forward") {
+      // move each selected item one step toward end
+      const out = [...arr];
+      for (let i = out.length - 2; i >= 0; i--) {
+        if (ids.has(out[i].id) && !ids.has(out[i + 1].id)) {
+          [out[i], out[i + 1]] = [out[i + 1], out[i]];
+        }
+      }
+      return out;
+    }
+    // backward: move each selected item one step toward start
+    const out = [...arr];
+    for (let i = 1; i < out.length; i++) {
+      if (ids.has(out[i].id) && !ids.has(out[i - 1].id)) {
+        [out[i], out[i - 1]] = [out[i - 1], out[i]];
+      }
+    }
+    return out;
+  };
+  const bringToFront  = () => { if (selKind === "room") commitRooms(p => reorder(p, selection, "front")); else commitFurn(p => reorder(p, selection, "front")); };
+  const sendToBack    = () => { if (selKind === "room") commitRooms(p => reorder(p, selection, "back"));  else commitFurn(p => reorder(p, selection, "back")); };
+  const bringForward  = () => { if (selKind === "room") commitRooms(p => reorder(p, selection, "forward")); else commitFurn(p => reorder(p, selection, "forward")); };
+  const sendBackward  = () => { if (selKind === "room") commitRooms(p => reorder(p, selection, "backward")); else commitFurn(p => reorder(p, selection, "backward")); };
+
+  const copyFloor = () => {
+    if (activeFloor === "all") return;
+    const srcRooms = rooms.filter(r => (r.floor || 1) === activeFloor);
+    const srcFurn  = furniture.filter(f => (f.floor || 1) === activeFloor);
+    setFloorClipboard({ rooms: srcRooms, furniture: srcFurn, sourceFloor: activeFloor });
+  };
+
+  const pasteToFloor = (targetFloor: number) => {
+    if (!floorClipboard) return;
+    // Remove existing rooms/furniture on the target floor first
+    const keptRooms = rooms.filter(r => (r.floor || 1) !== targetFloor);
+    const keptFurn  = furniture.filter(f => (f.floor || 1) !== targetFloor);
+    // Clone with new IDs and updated floor number
+    const pastedRooms: Room[] = floorClipboard.rooms.map(r => ({
+      ...r,
+      id: `r-f${targetFloor}-${Date.now()}-${Math.random().toString(36).slice(2,5)}`,
+      floor: targetFloor,
+      group: r.group ? `${r.group}-f${targetFloor}` : undefined,
+    }));
+    const pastedFurn: FurnitureItem[] = floorClipboard.furniture.map(f => ({
+      ...f,
+      id: `f-f${targetFloor}-${Date.now()}-${Math.random().toString(36).slice(2,5)}`,
+      floor: targetFloor,
+    }));
+    commitBoth(
+      () => [...keptRooms, ...pastedRooms],
+      () => [...keptFurn,  ...pastedFurn]
+    );
+    setActiveFloor(targetFloor);
+  };
+
   const exportJSON = () => {
     navigator.clipboard.writeText(JSON.stringify({ rooms, furniture }, null, 2));
     setCopied(true); setTimeout(() => setCopied(false), 2000);
@@ -468,26 +543,58 @@ export default function AdminPage() {
   const mRect = marquee ? { x: Math.min(marquee.x1, marquee.x2), y: Math.min(marquee.y1, marquee.y2), w: Math.abs(marquee.x2-marquee.x1), h: Math.abs(marquee.y2-marquee.y1) } : null;
 
   // Resize handle renderer
-  const renderHandles = (item: { x: number; y: number; w: number; h: number }, id: string, kind: SelKind) => {
+  const renderHandles = (item: { x: number; y: number; w: number; h: number }, id: string, kind: SelKind, rotation = 0) => {
     const handles = [
-      { dir: "nw", x: item.x-4, y: item.y-4, cursor: "nw-resize" },
-      { dir: "n",  x: item.x+item.w/2-3, y: item.y-4, cursor: "n-resize" },
-      { dir: "ne", x: item.x+item.w-3, y: item.y-4, cursor: "ne-resize" },
-      { dir: "w",  x: item.x-4, y: item.y+item.h/2-3, cursor: "w-resize" },
-      { dir: "e",  x: item.x+item.w-3, y: item.y+item.h/2-3, cursor: "e-resize" },
-      { dir: "sw", x: item.x-4, y: item.y+item.h-3, cursor: "sw-resize" },
-      { dir: "s",  x: item.x+item.w/2-3, y: item.y+item.h-3, cursor: "s-resize" },
-      { dir: "se", x: item.x+item.w-3, y: item.y+item.h-3, cursor: "se-resize" },
+      { dir: "nw", x: item.x-4,           y: item.y-4,           cursor: "nw-resize" },
+      { dir: "n",  x: item.x+item.w/2-3,  y: item.y-4,           cursor: "n-resize"  },
+      { dir: "ne", x: item.x+item.w-3,    y: item.y-4,           cursor: "ne-resize" },
+      { dir: "w",  x: item.x-4,           y: item.y+item.h/2-3,  cursor: "w-resize"  },
+      { dir: "e",  x: item.x+item.w-3,    y: item.y+item.h/2-3,  cursor: "e-resize"  },
+      { dir: "sw", x: item.x-4,           y: item.y+item.h-3,    cursor: "sw-resize" },
+      { dir: "s",  x: item.x+item.w/2-3,  y: item.y+item.h-3,    cursor: "s-resize"  },
+      { dir: "se", x: item.x+item.w-3,    y: item.y+item.h-3,    cursor: "se-resize" },
     ];
+    const cx = item.x + item.w / 2;
+    const cy = item.y + item.h / 2;
+
+    // Scale: 200 SVG units = 20 m  →  1 SVG unit = 0.1 m
+    // Swap w/h in label when rotated 90° or 270° (visually transposed)
+    const rot = ((rotation % 360) + 360) % 360;
+    const isTransposed = rot === 90 || rot === 270;
+    const dispW = isTransposed ? item.h : item.w;
+    const dispH = isTransposed ? item.w : item.h;
+    const wM = (dispW * 0.1).toFixed(1);
+    const hM = (dispH * 0.1).toFixed(1);
+    const areaM2 = (dispW * dispH * 0.01).toFixed(1);
+    const dimLabel = `${dispW}×${dispH}  (${wM}m × ${hM}m · ${areaM2}m²)`;
+    const labelPad = 2.5;
+    const labelFontSize = Math.max(5, Math.min(7, dispW / dimLabel.length * 1.6));
+    const labelH = labelFontSize + labelPad * 2;
+
+    // Half-size of the rotated bounding box so label clears the outermost corner
+    const halfDiag = Math.sqrt(item.w * item.w + item.h * item.h) / 2;
+
     return <>
-      {handles.map(h => (
-        <rect key={h.dir} x={h.x} y={h.y} width={7} height={7}
-          fill={h.dir.length === 2 ? "#fff" : "#ccc"} stroke="#000" strokeWidth={0.5}
-          style={{ cursor: h.cursor }}
-          onMouseDown={e => onItemDown(e, id, kind, h.dir)} />
-      ))}
-      <text x={item.x+item.w/2} y={item.y-8} textAnchor="middle" fill="#888" fontSize="6" fontFamily="Inter">
-        {item.w}×{item.h} @ ({item.x},{item.y})
+      {/* Handles — rotated with the item */}
+      <g transform={rotation ? `rotate(${rotation} ${cx} ${cy})` : undefined}>
+        {handles.map(h => (
+          <rect key={h.dir} x={h.x} y={h.y} width={7} height={7}
+            fill={h.dir.length === 2 ? "#fff" : "#ccc"} stroke="#000" strokeWidth={0.5}
+            style={{ cursor: h.cursor }}
+            onMouseDown={e => onItemDown(e, id, kind, h.dir)} />
+        ))}
+      </g>
+      {/* Dimension label — always horizontal, floated above the rotated item */}
+      <text
+        x={cx}
+        y={cy - halfDiag - labelH}
+        textAnchor="middle"
+        fill="#5bc8f5"
+        fontSize={labelFontSize}
+        fontFamily="Inter, monospace"
+        style={{ pointerEvents: "none" }}
+      >
+        {dimLabel}
       </text>
     </>;
   };
@@ -519,6 +626,39 @@ export default function AdminPage() {
             </button>
           ))}
         </div>
+
+        {/* Copy / Paste Floor */}
+        {activeFloor !== "all" && (
+          <button
+            onClick={copyFloor}
+            title={`Copy entire Floor ${activeFloor} layout`}
+            className="px-2 py-1 border border-stone-700 text-stone-400 hover:text-stone-200 hover:bg-stone-800 rounded shrink-0 text-[10px]"
+          >
+            ⧉ Copy F{activeFloor}
+          </button>
+        )}
+        {floorClipboard && (
+          <>
+            <span className="text-[9px] text-stone-500 shrink-0">Paste F{floorClipboard.sourceFloor} →</span>
+            {[1, 2, 3].filter(f => f !== floorClipboard.sourceFloor).map(f => (
+              <button
+                key={f}
+                onClick={() => pasteToFloor(f)}
+                title={`Paste Floor ${floorClipboard.sourceFloor} layout onto Floor ${f} (replaces existing)`}
+                className="px-2 py-1 border border-architect-600 text-architect-400 bg-architect-600/10 hover:bg-architect-500/30 rounded shrink-0 text-[10px] font-semibold"
+              >
+                F{f}
+              </button>
+            ))}
+            <button
+              onClick={() => setFloorClipboard(null)}
+              title="Clear floor clipboard"
+              className="px-1.5 py-1 border border-stone-700 text-stone-500 hover:text-red-400 hover:border-red-900/50 rounded shrink-0 text-[10px]"
+            >
+              ✕
+            </button>
+          </>
+        )}
         <span className="w-px h-5 bg-stone-700" />
 
         {/* Undo/Redo */}
@@ -544,6 +684,14 @@ export default function AdminPage() {
         {selection.size > 0 && <>
           <span className="text-architect-400 shrink-0">{selection.size} {selKind === "room" ? "room" : "item"}{selection.size > 1 ? "s" : ""}</span>
           <button onClick={deleteSelected} title="Delete · Del" className="px-2 py-1 border border-red-900/50 text-red-400 hover:bg-red-900/30 rounded shrink-0">🗑</button>
+          {/* Layer order */}
+          <span className="text-stone-600 shrink-0 text-[9px] uppercase tracking-wider">Layer:</span>
+          <div className="flex border border-stone-700 rounded overflow-hidden shrink-0">
+            <button onClick={bringToFront} title="Bring to Front" className="px-2 py-1 hover:bg-stone-800 text-stone-300 text-[11px] border-r border-stone-700">⤒</button>
+            <button onClick={bringForward} title="Bring Forward" className="px-2 py-1 hover:bg-stone-800 text-stone-300 text-[11px] border-r border-stone-700">↑</button>
+            <button onClick={sendBackward} title="Send Backward" className="px-2 py-1 hover:bg-stone-800 text-stone-300 text-[11px] border-r border-stone-700">↓</button>
+            <button onClick={sendToBack}   title="Send to Back"  className="px-2 py-1 hover:bg-stone-800 text-stone-300 text-[11px]">⤓</button>
+          </div>
           <button onClick={() => { const ns = new Set<string>(); const dupes = selKind === "room" ? rooms.filter(r => selection.has(r.id)).map(r => { const id = `d-${Date.now()}-${Math.random().toString(36).slice(2,5)}`; ns.add(id); return { ...r, id, x: r.x+15, y: r.y+15 }; }) : []; const furnDupes = selKind === "furniture" ? furniture.filter(f => selection.has(f.id)).map(f => { const id = `fd-${Date.now()}-${Math.random().toString(36).slice(2,5)}`; ns.add(id); return { ...f, id, x: f.x+15, y: f.y+15 }; }) : []; if (dupes.length) commitRooms(p => [...p, ...dupes]); if (furnDupes.length) commitFurn(p => [...p, ...furnDupes]); setSelection(ns); }} title="Duplicate · Ctrl+D" className="px-2 py-1 border border-stone-700 text-stone-400 hover:bg-stone-800 rounded shrink-0">⧉ Dupe</button>
           {selKind === "furniture" && (
             <>
@@ -601,6 +749,10 @@ export default function AdminPage() {
                   floorColor={floorColor}
                   showFurniture={true}
                   activeFloor={activeFloor}
+                  x={-30}
+                  y={0}
+                  width={1280}
+                  height={650}
                 />
 
 
@@ -641,13 +793,18 @@ export default function AdminPage() {
                               const solidFill = isGrouped && rMatch ? `rgb(${rMatch[1]},${rMatch[2]},${rMatch[3]})` : c.fill;
                               const isSel = selKind === "room" && selection.has(r.id);
                               
+                              const minHit = 20;
+                              const hitW = Math.max(r.w, minHit);
+                              const hitH = Math.max(r.h, minHit);
+                              const hitX = r.x + r.w / 2 - hitW / 2;
+                              const hitY = r.y + r.h / 2 - hitH / 2;
                               return (
                                 <g key={`f-${r.id}`}>
                                   {r.shape === "circle" ? (
-                                    <ellipse cx={r.x + r.w / 2} cy={r.y + r.h / 2} rx={r.w / 2} ry={r.h / 2} fill="rgba(0,0,0,0)" stroke="none"
+                                    <ellipse cx={r.x + r.w / 2} cy={r.y + r.h / 2} rx={Math.max(r.w / 2, minHit / 2)} ry={Math.max(r.h / 2, minHit / 2)} fill="rgba(0,0,0,0)" stroke="none"
                                       style={{ cursor: dragging?.id === r.id ? "grabbing" : "grab" }} onMouseDown={e => onItemDown(e, r.id, "room", "drag")} />
                                   ) : (
-                                    <rect x={r.x} y={r.y} width={r.w} height={r.h} fill="rgba(0,0,0,0)" stroke="none"
+                                    <rect x={hitX} y={hitY} width={hitW} height={hitH} fill="rgba(0,0,0,0)" stroke="none"
                                       style={{ cursor: dragging?.id === r.id ? "grabbing" : "grab" }} onMouseDown={e => onItemDown(e, r.id, "room", "drag")} />
                                   )}
                                   {isSel && renderHandles(r, r.id, "room")}
@@ -683,12 +840,17 @@ export default function AdminPage() {
                   
                   const furnColor = parentRoom ? (ROOM_COLORS[parentRoom.category] || ROOM_COLORS["support"]).stroke : undefined;
 
+                  const fMinHit = 20;
+                  const fHitW = Math.max(fItem.w, fMinHit);
+                  const fHitH = Math.max(fItem.h, fMinHit);
+                  const fHitX = fItem.x + fItem.w / 2 - fHitW / 2;
+                  const fHitY = fItem.y + fItem.h / 2 - fHitH / 2;
                   return (
                     <g key={fItem.id}>
-                      <rect x={fItem.x} y={fItem.y} width={fItem.w} height={fItem.h} fill="rgba(0,0,0,0)" stroke="none"
+                      <rect x={fHitX} y={fHitY} width={fHitW} height={fHitH} fill="rgba(0,0,0,0)" stroke="none"
                         style={{ cursor: dragging?.id === fItem.id ? "grabbing" : "grab" }}
                         onMouseDown={e => onItemDown(e, fItem.id, "furniture", "drag")} />
-                      {isSel && renderHandles(fItem, fItem.id, "furniture")}
+                      {isSel && renderHandles(fItem, fItem.id, "furniture", fItem.rotation)}
                     </g>
                   );
                 })}

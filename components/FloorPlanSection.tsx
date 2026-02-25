@@ -86,7 +86,13 @@ export default function FloorPlanSection() {
           <div className="absolute inset-0 flex items-center justify-center">
             {viewMode === "2d" ? (
               <>
-                <FloorPlanRenderer rooms={rooms} furniture={furniture} floorColor={floorColor} showReferences={false} />
+                <FloorPlanRenderer
+                  rooms={rooms.filter(r => (r.floor || 1) === 1)}
+                  furniture={furniture.filter(f => (f.floor || 1) === 1)}
+                  floorColor={floorColor}
+                  showReferences={false}
+                  activeFloor={1}
+                />
                 {floorPlanAnnotations.map((ann) => (
                   <GuideArrow 
                     key={ann.id} 
