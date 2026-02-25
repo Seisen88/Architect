@@ -17,12 +17,12 @@ export type RoomCategory =
   | "support";     // gray  — Support / Circulation
 
 export const ROOM_COLORS: Record<RoomCategory, { fill: string; stroke: string; text: string; label: string }> = {
-  floor:      { fill: "rgba(212,197,169,0.22)", stroke: "#a8875e", text: "#d4c5a9", label: "Support / Circulation" },
-  financial:  { fill: "rgba(124,179,216,0.22)", stroke: "#3b82f6", text: "#7cb3d8", label: "Financial Services" },
-  public:     { fill: "rgba(110,212,165,0.22)", stroke: "#16a34a", text: "#6ed4a5", label: "Public Services" },
-  integrated: { fill: "rgba(232,168,76,0.22)",  stroke: "#d97706", text: "#e8a84c", label: "Integrated Hub (BIR/LTO/PhilHealth)" },
-  utility:    { fill: "rgba(239,68,68,0.20)",   stroke: "#dc2626", text: "#f87171", label: "Utility / Service" },
-  support:    { fill: "rgba(156,163,175,0.16)", stroke: "#64748b", text: "#9ca3af", label: "Floor / Corridors" },
+  floor:      { fill: "rgba(181, 151, 104, 0.22)", stroke: "#b59768", text: "#f5e4c3", label: "Administration & Governance" }, // lighter tan text color
+  financial:  { fill: "rgba(59, 130, 246, 0.22)", stroke: "#3b82f6", text: "#60a5fa", label: "Financial Management Services" }, // 🔵 blue
+  public:     { fill: "rgba(34, 197, 94, 0.22)", stroke: "#22c55e", text: "#6ed4a5", label: "Social & Community Services" }, // 🟢 green
+  integrated: { fill: "rgba(251, 146, 60, 0.22)", stroke: "#fb923c", text: "#f59e42", label: "Integrated Government Services" }, // 🟠 orange
+  utility:    { fill: "rgba(107, 119, 140, 0.22)", stroke: "#6b778c", text: "#a0aec0", label: "Utilities & Building Services" }, // blue-gray color
+  support:    { fill: "rgba(255,255,255,0.16)", stroke: "#d1d5db", text: "#9ca3af", label: "Circulation & Common Areas" }, // ⚪ white/gray
 };
 
 export interface Room {
@@ -299,6 +299,16 @@ export const floorPlanAnnotations: Annotation[] = [
     direction: "top",
     area: "Center Courtyard",
   },
+];
+
+// Second Floor Plan annotations — Sheet A 04 (Scale 1:200)
+export const floorPlanAnnotations2: Annotation[] = [
+  // No dots or descriptions for second floor
+];
+
+// Third Floor Plan annotations — Sheet A 05 (Scale 1:200)
+export const floorPlanAnnotations3: Annotation[] = [
+  // No dots or descriptions for third floor
 ];
 
 // Site area data — New Government Center (37,581 sqm)

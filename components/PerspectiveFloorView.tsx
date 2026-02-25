@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import FloorPlanRenderer from "./FloorPlanRenderer";
-import { Room, FurnitureItem, floorPlanAnnotations } from "@/lib/siteData";
+import { Room, FurnitureItem, floorPlanAnnotations, floorPlanAnnotations2, floorPlanAnnotations3 } from "@/lib/siteData";
 
 interface Props {
   rooms: Room[];
@@ -21,7 +21,17 @@ export default function PerspectiveFloorView({ rooms, furniture = [], onLayerFoc
   const [focusedLayer, setFocusedLayer] = useState<number | null>(null);
   const [activeAnnId, setActiveAnnId] = useState<string | null>(null);
 
-  const activeAnn = activeAnnId ? floorPlanAnnotations.find(a => a.id === activeAnnId) : null;
+  // Find active annotation from any floor
+  let activeAnn = null;
+  if (activeAnnId) {
+    if (focusedLayer === 1) {
+      activeAnn = floorPlanAnnotations.find(a => a.id === activeAnnId);
+    } else if (focusedLayer === 2) {
+      activeAnn = floorPlanAnnotations2.find(a => a.id === activeAnnId);
+    } else if (focusedLayer === 3) {
+      activeAnn = floorPlanAnnotations3.find(a => a.id === activeAnnId);
+    }
+  }
 
   // SVG base dimensions, scaling down slightly for isometric fit
   const BASE_W = 1100;
@@ -105,6 +115,76 @@ export default function PerspectiveFloorView({ rooms, furniture = [], onLayerFoc
                    {layer.level === 1 && (
                      <div className="absolute inset-0 pointer-events-none">
                        {floorPlanAnnotations.map(ann => (
+                         <button
+                           key={ann.id}
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             setActiveAnnId(ann.id === activeAnnId ? null : ann.id);
+                           }}
+                           className="absolute w-6 h-6 flex items-center justify-center group cursor-pointer pointer-events-auto"
+                           style={{
+                             left: `${ann.x}%`,
+                             top: `${ann.y}%`,
+                             transform: 'translate(-50%, -50%)',
+                           }}
+                           title={ann.label}
+                           aria-label={`View details for ${ann.label}`}
+                         >
+                           {/* Pulse rings */}
+                           <span className={`absolute inset-0 rounded-full border border-architect-500 transition-transform duration-500 ${activeAnnId === ann.id ? 'scale-150 opacity-100' : 'opacity-60 group-hover:scale-150'}`} />
+                           
+                           {/* Core dot */}
+                           <span className="w-3 h-3 rounded-full bg-architect-500 group-hover:bg-architect-300 transition-colors z-10 flex items-center justify-center shadow-md shadow-black/50">
+                             <span 
+                               className="text-[5px] font-bold text-stone-950 block transition-transform duration-1000"
+                               style={{ transform: focusedLayer !== null ? 'rotateZ(0deg)' : 'rotateZ(90deg)' }} // Rotate text smoothly based on container rotation
+                             >
+                               {ann.shortLabel}
+                             </span>
+                           </span>
+                         </button>
+                       ))}
+                     </div>
+                   )}
+                   {/* Annotations mapped to the second floor */}
+                   {layer.level === 2 && (
+                     <div className="absolute inset-0 pointer-events-none">
+                       {floorPlanAnnotations2.map(ann => (
+                         <button
+                           key={ann.id}
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             setActiveAnnId(ann.id === activeAnnId ? null : ann.id);
+                           }}
+                           className="absolute w-6 h-6 flex items-center justify-center group cursor-pointer pointer-events-auto"
+                           style={{
+                             left: `${ann.x}%`,
+                             top: `${ann.y}%`,
+                             transform: 'translate(-50%, -50%)',
+                           }}
+                           title={ann.label}
+                           aria-label={`View details for ${ann.label}`}
+                         >
+                           {/* Pulse rings */}
+                           <span className={`absolute inset-0 rounded-full border border-architect-500 transition-transform duration-500 ${activeAnnId === ann.id ? 'scale-150 opacity-100' : 'opacity-60 group-hover:scale-150'}`} />
+                           
+                           {/* Core dot */}
+                           <span className="w-3 h-3 rounded-full bg-architect-500 group-hover:bg-architect-300 transition-colors z-10 flex items-center justify-center shadow-md shadow-black/50">
+                             <span 
+                               className="text-[5px] font-bold text-stone-950 block transition-transform duration-1000"
+                               style={{ transform: focusedLayer !== null ? 'rotateZ(0deg)' : 'rotateZ(90deg)' }} // Rotate text smoothly based on container rotation
+                             >
+                               {ann.shortLabel}
+                             </span>
+                           </span>
+                         </button>
+                       ))}
+                     </div>
+                   )}
+                   {/* Annotations mapped to the third floor */}
+                   {layer.level === 3 && (
+                     <div className="absolute inset-0 pointer-events-none">
+                       {floorPlanAnnotations3.map(ann => (
                          <button
                            key={ann.id}
                            onClick={(e) => {
