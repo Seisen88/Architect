@@ -98,6 +98,23 @@ export const defaultRooms: Room[] = [
   { id: "staff",       label: "STAFF / PANTRY",              category: "support",    x: 942, y: 520, w: 120, h: 40, floor: 1 },
 ];
 
+// Second floor layout — matches Sheet A04
+export const secondFloorRooms: Room[] = [
+  { id: "courtroom", label: "Main Courtroom", category: "floor", x: 500, y: 250, w: 200, h: 120, floor: 2 },
+  { id: "library", label: "Municipal Library", category: "public", x: 800, y: 200, w: 150, h: 100, floor: 2 },
+  { id: "drrmo", label: "DRRMO & COA", category: "public", x: 700, y: 400, w: 120, h: 80, floor: 2 },
+  { id: "function-hall", label: "Function Hall", category: "support", x: 300, y: 100, w: 180, h: 100, floor: 2 },
+  // Add more rooms as needed for completeness
+];
+
+// Third floor layout — matches Sheet A05
+export const thirdFloorRooms: Room[] = [
+  { id: "holding-cells", label: "Holding Cells 1 & 2", category: "support", x: 350, y: 80, w: 120, h: 80, floor: 3 },
+  { id: "legal-dept", label: "Legal Department", category: "floor", x: 600, y: 120, w: 160, h: 100, floor: 3 },
+  { id: "adr-room", label: "ADR Room", category: "public", x: 850, y: 180, w: 120, h: 80, floor: 3 },
+  // Add more rooms as needed for completeness
+];
+
 // ── Furniture / Element data ──
 export type FurnitureType =
   | "door" | "double-door" | "window" | "stairs-up" | "stairs-down"
@@ -226,7 +243,7 @@ export const floorPlanAnnotations: Annotation[] = [
     id: "records-cluster",
     x: 18,
     y: 45,
-    label: "Civil Records & Assessment",
+    label: "CIVIL RECORDS & ASSESSMENT",
     shortLabel: "PR",
     description:
       "The West Wing (Columns A–C) houses public records and permitting offices: the Assessor's Office, Local Civil Registrar (LCR), and Licensing Office. Positioned near a secondary entry, this cluster allows citizens quick access for standard municipal documents and clearances without traversing the entire building.",
@@ -237,7 +254,7 @@ export const floorPlanAnnotations: Annotation[] = [
     id: "admin-services",
     x: 21,
     y: 25,
-    label: "Admin & General Services",
+    label: "ADMIN & GENERAL SERVICES",
     shortLabel: "GS",
     description:
       "The North-West administrative block contains the General Services Office and the Tourism Office. These departments handle internal municipal logistics, procurement, and local economic promotion, strategically placed near the Financial Services cluster for seamless backend operations.",
@@ -248,7 +265,7 @@ export const floorPlanAnnotations: Annotation[] = [
     id: "financial-services",
     x: 40,
     y: 40,
-    label: "Financial Services Hub",
+    label: "FINANCIAL SERVICES HUB",
     shortLabel: "FS",
     description:
       "The financial core integrates the Office of the Municipal Accountant, Municipal Budget Office, and Municipal Treasurer. Equipped with secure vaults, dedicated transaction windows, ATM stations, and self-service kiosks, this high-security zone is centrally located for both internal treasury operations and public tax payments.",
@@ -259,7 +276,7 @@ export const floorPlanAnnotations: Annotation[] = [
     id: "engineering-wing",
     x: 75,
     y: 25,
-    label: "Engineering & Planning",
+    label: "ENGINEERING & PLANNING",
     shortLabel: "EP",
     description:
       "The North-East block is dedicated to infrastructure and development: the Office of the Municipal Architect, Building Official, and Municipal Engineer. This cluster processes building permits, structural inspections, and municipal construction planning.",
@@ -270,7 +287,7 @@ export const floorPlanAnnotations: Annotation[] = [
     id: "welfare-cluster",
     x: 65,
     y: 55,
-    label: "Health & Social Welfare",
+    label: "HEALTH & SOCIAL WELFARE",
     shortLabel: "HW",
     description:
       "The South-East inner wing prioritizes citizen care, featuring the Municipal Health Office (with lactating area and medical storage), Senior Citizens & PWD Affairs, and the Municipal Social Welfare Office. Accessible directly from the main lobby to accommodate vulnerable demographics.",
@@ -281,7 +298,7 @@ export const floorPlanAnnotations: Annotation[] = [
     id: "enterprise-wing",
     x: 83,
     y: 50,
-    label: "Enterprise & IT Center",
+    label: "ENTERPRISE & IT CENTER",
     shortLabel: "IT",
     description:
       "The far East Wing houses the IT Server Room & Data Center, securing the municipality's digital infrastructure. Adjacent are the Office of the Economic Enterprise and the Municipal Veterinary Office, completing the diverse ground-floor government services.",
@@ -292,7 +309,7 @@ export const floorPlanAnnotations: Annotation[] = [
     id: "circulation",
     x: 50,
     y: 80,
-    label: "Central Lobby & Circulation",
+    label: "CENTRAL LOBBY & CIRCULATION",
     shortLabel: "CL",
     description:
       "A vast, open-plan central lobby connects all specialized wings. Featuring structural columns, multiple open seating areas, a main reception desk, and clear wayfinding. The space is naturally ventilated and serves as the primary civic gathering point on the ground level.",
@@ -303,12 +320,86 @@ export const floorPlanAnnotations: Annotation[] = [
 
 // Second Floor Plan annotations — Sheet A 04 (Scale 1:200)
 export const floorPlanAnnotations2: Annotation[] = [
-  // No dots or descriptions for second floor
-];
-
-// Third Floor Plan annotations — Sheet A 05 (Scale 1:200)
-export const floorPlanAnnotations3: Annotation[] = [
-  // No dots or descriptions for third floor
+  {
+    id: "room-1772014058596-665",
+    x: ((475 + 280/2) / 1100) * 100,
+    y: ((30 + 100/2) / 605) * 100,
+    label: "OFFICE OF THE MUNICIPAL ARCHITECT",
+    shortLabel: "ARCH",
+    description: "Office of the Municipal Architect, top center.",
+    direction: "top",
+    area: "Top Center"
+  },
+  {
+    id: "r-f2-1772013942467-0wi",
+    x: ((315 + 190/2) / 1100) * 100,
+    y: ((180 + 90/2) / 605) * 100,
+    label: "OFFICE OF THE MAYOR",
+    shortLabel: "MAYOR",
+    description: "Office of the Mayor, center left.",
+    direction: "right",
+    area: "Center Left"
+  },
+  {
+    id: "r-f2-1772013942467-nd9",
+    x: ((260 + 140/2) / 1100) * 100,
+    y: ((270 + 105/2) / 605) * 100,
+    label: "LEGAL OFFICE",
+    shortLabel: "LEGAL",
+    description: "Legal Office, lower left.",
+    direction: "right",
+    area: "Lower Left"
+  },
+  {
+    id: "r-f2-1772013942467-ljo",
+    x: ((50 + 105/2) / 1100) * 100,
+    y: ((270 + 100/2) / 605) * 100,
+    label: "HUMAN RESOURCE OFFICE",
+    shortLabel: "HR",
+    description: "Human Resource Office, lower far left.",
+    direction: "right",
+    area: "Lower Far Left"
+  },
+  {
+    id: "r-f2-1772013942467-0bl",
+    x: ((50 + 105/2) / 1100) * 100,
+    y: ((370 + 100/2) / 605) * 100,
+    label: "INTERNAL CONTROL OFFICE",
+    shortLabel: "INT",
+    description: "Internal Control Office, bottom far left.",
+    direction: "right",
+    area: "Bottom Far Left"
+  },
+  {
+    id: "r-f2-1772013942467-9ay",
+    x: ((50 + 105/2) / 1100) * 100,
+    y: ((180 + 90/2) / 605) * 100,
+    label: "OFFICE OF THE MPDC",
+    shortLabel: "MPDC",
+    description: "Office of the MPDC, top far left.",
+    direction: "right",
+    area: "Top Far Left"
+  },
+  {
+    id: "r-f2-1772013942467-qfz",
+    x: ((50 + 105/2) / 1100) * 100,
+    y: ((100 + 30/2) / 605) * 100,
+    label: "ELECTRICAL ROOM",
+    shortLabel: "ELEC",
+    description: "Electrical Room, top far left.",
+    direction: "right",
+    area: "Top Far Left"
+  },
+  {
+    id: "r-f2-1772013942467-mae",
+    x: ((50 + 105/2) / 1100) * 100,
+    y: ((75 + 25/2) / 605) * 100,
+    label: "FIRE EXIT",
+    shortLabel: "FIRE",
+    description: "Fire Exit, top far left.",
+    direction: "right",
+    area: "Top Far Left"
+  },
 ];
 
 // Site area data — New Government Center (37,581 sqm)
@@ -385,12 +476,12 @@ export const elevationViews: ElevationView[] = [
     id: "north",
     label: "North (National Highway) Elevation",
     description:
-      "The primary public façade of the New Government Center faces the National Highway, establishing a strong civic presence for E.B. Magalona. A symmetrical composition with a central recessed main entry portal is flanked by the administrative wings on either side. The three-storey elevation steps down at the wings to reduce visual mass. Column grid references A–Q are expressed as vertical pilasters across the façade.",
+      "The main public façade presents a dignified civic presence along the National Highway. The formal entrance portal, pilaster columns expressing the structural grid, and rhythmic window openings create an authoritative government building character appropriate for E.B. Magalona's New Government Center.",
     annotations: [
-      { x: 18, y: 25, text: "Column grid A–Q — pilasters expressed on façade" },
-      { x: 50, y: 18, text: "Central entry portal — 3-storey height, recessed" },
-      { x: 78, y: 28, text: "3rd floor parapet — continuous horizontal band" },
-      { x: 50, y: 80, text: "Ground level — main drop-off forecourt" },
+      { x: 15, y: 25, text: "Main entrance portal — grand civic entry" },
+      { x: 35, y: 20, text: "Pilaster columns — structural grid expression" },
+      { x: 65, y: 30, text: "Window bands — natural daylight to offices" },
+      { x: 50, y: 75, text: "Entry forecourt — public drop-off area" },
     ],
   },
   {
@@ -430,6 +521,40 @@ export const elevationViews: ElevationView[] = [
       { x: 50, y: 84, text: "Slab-on-grade — RC footing system" },
     ],
   },
+];
+
+// 2nd floor annotations are already fixed using JSON. Now update 1st and 3rd floors below.
+export const floorPlanAnnotations1: Annotation[] = [
+  // Only rooms with a non-empty label and floor === 1
+  { id: "d-1771956140002-r1c", x: ((960 + 85/2) / 1100) * 100, y: ((30 + 100/2) / 605) * 100, label: "OFFICE OF THE MUNICIPAL ENGINEER", shortLabel: "ENGR", description: "Office of the Municipal Engineer", direction: "top", area: "Top Right" },
+  { id: "d-1771956148666-i5j", x: ((875 + 85/2) / 1100) * 100, y: ((30 + 100/2) / 605) * 100, label: "OFFICE OF THE BUILDING OFFICIALS", shortLabel: "BO", description: "Office of the Building Officials", direction: "top", area: "Top Right" },
+  { id: "d-1771956150846-vij", x: ((790 + 85/2) / 1100) * 100, y: ((30 + 100/2) / 605) * 100, label: "OFFICE OF THE MUNICIPAL ARCHITECT", shortLabel: "ARCH", description: "Office of the Municipal Architect", direction: "top", area: "Top Right" },
+  { id: "d-1771956267828-udi", x: ((755 + 150/2) / 1100) * 100, y: ((180 + 90/2) / 605) * 100, label: "OFFICE OF THE MUNICIPAL HEALTH", shortLabel: "HEALTH", description: "Office of the Municipal Health", direction: "right", area: "Center Right" },
+  { id: "d-1771956276169-j4b", x: ((830 + 130/2) / 1100) * 100, y: ((270 + 105/2) / 605) * 100, label: "OFFICE OF SENIOR CITIZEN AND PERSONS WITH DISABILITY AFFAIRS", shortLabel: "SCPDA", description: "Senior Citizen & PWD Affairs", direction: "right", area: "Center Right" },
+  { id: "d-1771956286270-lck", x: ((830 + 130/2) / 1100) * 100, y: ((375 + 115/2) / 605) * 100, label: "OFFICE OF THE MUNICIPAL SOCIAL WELFARE", shortLabel: "MSWDO", description: "Municipal Social Welfare", direction: "right", area: "Bottom Right" },
+  { id: "d-1771956430394-mfj", x: ((1045 + 120/2) / 1100) * 100, y: ((225 + 115/2) / 605) * 100, label: "OFFICE OF THE ECONOMIC ENTERPRISE", shortLabel: "ENTERPRISE", description: "Economic Enterprise Office", direction: "left", area: "Far Right" },
+  { id: "d-1771956438776-4mu", x: ((1045 + 120/2) / 1100) * 100, y: ((375 + 115/2) / 605) * 100, label: "OFFICE OF THE MUNICIPAL VETERINARY", shortLabel: "VET", description: "Municipal Veterinary Office", direction: "left", area: "Far Right" },
+  { id: "d-1771957260841-q2r", x: ((345 + 95/2) / 1100) * 100, y: ((30 + 100/2) / 605) * 100, label: "OFFICE OF THE MUNICIPAL ACCOUNTANT", shortLabel: "ACCOUNTANT", description: "Municipal Accountant Office", direction: "top", area: "Top Left" },
+  { id: "d-1771957260841-hrt", x: ((250 + 95/2) / 1100) * 100, y: ((30 + 100/2) / 605) * 100, label: "TOURISM OFFICE", shortLabel: "TOURISM", description: "Tourism Office", direction: "top", area: "Top Left" },
+  { id: "d-1771957260841-q8b", x: ((155 + 95/2) / 1100) * 100, y: ((30 + 100/2) / 605) * 100, label: "GENERAL SERVICE OFFFICE", shortLabel: "GSO", description: "General Service Office", direction: "top", area: "Top Left" },
+  { id: "d-1771957445486-6pj", x: ((50 + 105/2) / 1100) * 100, y: ((180 + 90/2) / 605) * 100, label: "ASSESSOR'S OFFICE", shortLabel: "ASSESSOR", description: "Assessor's Office", direction: "right", area: "Far Left" },
+  { id: "d-1771957578549-rzp", x: ((50 + 105/2) / 1100) * 100, y: ((270 + 100/2) / 605) * 100, label: "LOCAL CIVIL REGISTRAR'S OFFICE", shortLabel: "LCR", description: "Local Civil Registrar's Office", direction: "right", area: "Far Left" },
+  { id: "d-1771957581515-mnk", x: ((50 + 105/2) / 1100) * 100, y: ((370 + 100/2) / 605) * 100, label: "LICENSING OFFICE", shortLabel: "LICENSING", description: "Licensing Office", direction: "right", area: "Far Left" },
+];
+export const floorPlanAnnotations3: Annotation[] = [
+  // Only rooms with a non-empty label and floor === 3 - updated from floor-plan (6).json
+  { id: "r-f3-1772015733627-mj9", x: ((960 + 65/2) / 1165) * 100, y: ((30 + 100/2) / 625) * 100, label: "MAIN COURTROOM / DELIBERATION ROOM / JUDGE'S CHAMBER", shortLabel: "COURT", description: "Main Courtroom featuring judicial proceedings, deliberation facilities, and judge's private chamber with secure access and soundproofing for confidential hearings", direction: "top", area: "Top Right" },
+  { id: "r-f3-1772015733627-sm9", x: ((725 + 160/2) / 1165) * 100, y: ((180 + 90/2) / 625) * 100, label: "ALTERNATIVE DISPUTE RESOLUTION ROOM", shortLabel: "ADR", description: "Alternative Dispute Resolution Room providing mediation and arbitration services for civil cases, equipped with neutral seating arrangements and recording capabilities", direction: "right", area: "Center Right" },
+  { id: "r-f3-1772015733627-3kb", x: ((830 + 130/2) / 1165) * 100, y: ((270 + 105/2) / 625) * 100, label: "OFFICE OF THE CLERK OF COURT", shortLabel: "CLERK", description: "Office of the Clerk of Court handling case filing, document management, scheduling, and public records maintenance with secure document storage systems", direction: "right", area: "Center Right" },
+  { id: "r-f3-1772015733627-wnu", x: ((1045 + 120/2) / 1165) * 100, y: ((225 + 115/2) / 625) * 100, label: "LEGAL LIBRARY / RESEARCH ROOM", shortLabel: "LIB", description: "Legal Library and Research Room containing comprehensive law books, legal databases, and quiet study areas for attorneys, judges, and legal researchers", direction: "left", area: "Far Right" },
+  { id: "r-f3-1772015733627-afl", x: ((1045 + 120/2) / 1165) * 100, y: ((375 + 115/2) / 625) * 100, label: "PUBLIC ASSISTANCE & RECORDS ROOM", shortLabel: "PAR", description: "Public Assistance and Records Room providing citizen services, document retrieval, case status inquiries, and legal assistance for self-represented litigants", direction: "left", area: "Far Right" },
+  { id: "r-f3-1772015733627-01v", x: ((345 + 95/2) / 1165) * 100, y: ((30 + 100/2) / 625) * 100, label: "MUNICIPAL LIBRARY", shortLabel: "LIBRARY", description: "Municipal Library offering public access to books, digital resources, community programs, and educational services for residents of all ages", direction: "top", area: "Top Left" },
+  { id: "r-f3-1772015733627-b7k", x: ((315 + 185/2) / 1165) * 100, y: ((180 + 90/2) / 625) * 100, label: "SMALL FARMERS ASSOCIATION", shortLabel: "FARMERS", description: "Small Farmers Association Office supporting agricultural cooperatives, providing crop planning assistance, market access programs, and rural development initiatives", direction: "right", area: "Center Left" },
+  { id: "r-f3-1772015733627-gl9", x: ((260 + 140/2) / 1165) * 100, y: ((270 + 105/2) / 625) * 100, label: "COMMAND AND CONTROL CENTER", shortLabel: "CONTROL", description: "Command and Control Center coordinating emergency response, monitoring municipal systems, and providing real-time communication for public safety operations", direction: "right", area: "Center Left" },
+  { id: "r-f3-1772015733627-itd", x: ((50 + 105/2) / 1165) * 100, y: ((180 + 90/2) / 625) * 100, label: "DISASTER RISK REDUCTION TRAINING SIMULATION ROOM", shortLabel: "DRRMO", description: "Disaster Risk Reduction Management Office featuring emergency training simulations, crisis response planning, and community preparedness education programs", direction: "right", area: "Far Left" },
+  { id: "r-f3-1772015733627-yzm", x: ((50 + 105/2) / 1165) * 100, y: ((270 + 100/2) / 625) * 100, label: "OFFICE OF THE BUILDING OFFICIAL TECHNICAL ROOM", shortLabel: "BO TECH", description: "Building Official Technical Room housing engineering review processes, structural plan analysis, code compliance verification, and construction permit processing", direction: "right", area: "Far Left" },
+  { id: "r-f3-1772015733627-e50", x: ((50 + 105/2) / 1165) * 100, y: ((370 + 100/2) / 625) * 100, label: "GENDER AND DEVELOPMENT OFFICE", shortLabel: "GAD", description: "Gender and Development Office promoting gender equality, women's empowerment programs, gender-sensitive policy development, and inclusive community initiatives", direction: "right", area: "Far Left" },
+  { id: "r-f3-1772015733627-0vh", x: ((475 + 280/2) / 1165) * 100, y: ((30 + 100/2) / 625) * 100, label: "FUNCTION HALL", shortLabel: "HALL", description: "Multi-Purpose Function Hall accommodating community events, municipal meetings, public ceremonies, and large gatherings with flexible seating arrangements", direction: "top", area: "Top Center" },
 ];
 
 // Site development timeline — NGC, E.B. Magalona
@@ -533,32 +658,8 @@ export const processsteps: ProcessStep[] = [
     duration: "2 weeks",
   },
   {
-    id: "concept",
+    id: "docs",
     step: 2,
-    title: "Concept Design",
-    subtitle: "Circular lobby void as the civic anchor",
-    icon: "Lightbulb",
-    description:
-      "The central design concept — a circular Grand Lobby void connecting all three floors — emerged from the need to create a legible, democratic public space within a complex government building. The circular form symbolises inclusivity and equality of access to public services. The two parallel wings (east and west) flanking the central lobby organise government offices into logical clusters: executive and financial services (west) and public services and judicial (east), guided by Ar. Gary Peter L. Bello, UAP.",
-    tools: ["Hand sketching", "Bubble diagram spatial planning", "AutoCAD massing", "Column grid layout (A–Q × 1–12)"],
-    deliverables: ["Concept design sketches", "Bubble diagram (room adjacency)", "Preliminary floor plan layout"],
-    duration: "3 weeks",
-  },
-  {
-    id: "design-dev",
-    step: 3,
-    title: "Design Development",
-    subtitle: "Resolving the full 3-floor program",
-    icon: "PenTool",
-    description:
-      "The approved concept was developed into a coordinated three-floor plan. Ground floor (Sheet A03): 20+ government offices including the Mayor's Office, Treasury, MPDC, MSWDO, LCR, and Integrated Services Hub (BIR, LTO, Post Office, PhilHealth). Second floor (Sheet A04): Judicial cluster (Courtroom, Judge's Office, Prosecutor's, PAO, Parole & Probation), government agencies (COA, DILG, PDEA, PNP, BFP), Municipal Library, Function Hall, and DRRMO. Third floor (Sheet A05): Holding Cells 1 & 2, Legal Department, ADR Room, Prosecution Center, Community Offices. PWD ramps, elevator, and stairs at all vertical circulation cores.",
-    tools: ["AutoCAD full drafting — Scale 1:200", "Column grid coordination (A–Q × 1–12)", "UAP documentation standards", "Structural engineer coordination"],
-    deliverables: ["Sheet A03: Ground Floor Plan 1:200", "Sheet A04: Second Floor Plan 1:200", "Sheet A05: Third Floor Plan 1:200"],
-    duration: "5 weeks",
-  },
-  {
-    id: "documentation",
-    step: 4,
     title: "Construction Documents",
     subtitle: "Full sheet set A01–A12+",
     icon: "FileText",

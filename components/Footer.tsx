@@ -6,11 +6,11 @@ export default function Footer() {
           {/* Brand & Proponent */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-5">
-              <div className="w-8 h-8 border border-architect-500/60 flex items-center justify-center rotate-45">
-                <div className="w-3.5 h-3.5 bg-architect-500" />
-              </div>
-              <span className="font-serif text-lg tracking-widest text-architect-200" style={{ fontFamily: "'Playfair Display', serif" }}>
-                ARCHI<span className="text-architect-500">DESIGN</span>
+              <span
+                className="text-lg tracking-[0.35em] uppercase text-architect-200"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600 }}
+              >
+                WOOD<span className="font-light text-architect-400">LAND</span>
               </span>
             </div>
 
